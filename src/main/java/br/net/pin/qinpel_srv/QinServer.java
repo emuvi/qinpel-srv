@@ -1,5 +1,6 @@
 package br.net.pin.qinpel_srv;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import org.eclipse.jetty.server.Connector;
@@ -57,8 +58,8 @@ public class QinServer {
     if (this.setup.servesCMDs) {
       this.serves_cmds();
     }
-    if (this.setup.serves_base()) {
-      this.serves_base();
+    if (this.setup.servesDATs) {
+      this.serves_dats();
     }
     if (this.setup.servesREGs) {
       this.serves_regs();
@@ -69,22 +70,20 @@ public class QinServer {
     if (this.setup.servesLIZs) {
       this.serves_lizs();
     }
-    this.serves_util();
+    this.serves_utils();
     this.server.start();
     this.server.join();
   }
 
   public void serves_pubs() {
-    this.context.addServlet(new ServletHolder(new HttpServlet() {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-          throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
-      }
-    }), "/pub/*");
+    System.out.println("Serving PUBs...");
+    var holder = new ServletHolder(new ServesPUBs());
+    holder.setInitParameter("basePath", new File("./pub").getAbsolutePath());
+    this.context.addServlet(holder, "/pub/*");
   }
 
   public void serves_apps() {
+    System.out.println("Serving APPs...");
     this.context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -103,6 +102,7 @@ public class QinServer {
   }
 
   public void serves_dirs() {
+    System.out.println("Serving DIRs...");
     this.context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -194,6 +194,7 @@ public class QinServer {
   }
 
   public void serves_cmds() {
+    System.out.println("Serving CMDs...");
     this.context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -211,7 +212,8 @@ public class QinServer {
     }), "/list/cmds");
   }
 
-  public void serves_base() {
+  public void serves_dats() {
+    System.out.println("Serving DATs...");
     this.context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -222,6 +224,7 @@ public class QinServer {
   }
 
   public void serves_regs() {
+    System.out.println("Serving REGs...");
     this.context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -256,6 +259,7 @@ public class QinServer {
   }
 
   public void serves_sqls() {
+    System.out.println("Serving SQLs...");
     this.context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -274,6 +278,7 @@ public class QinServer {
   }
 
   public void serves_lizs() {
+    System.out.println("Serving LIZs...");
     this.context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -291,7 +296,8 @@ public class QinServer {
     }), "/list/lizs");
   }
 
-  public void serves_util() {
+  public void serves_utils() {
+    System.out.println("Serving Utils...");
     this.context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)

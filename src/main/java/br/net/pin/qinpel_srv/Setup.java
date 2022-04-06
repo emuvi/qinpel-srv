@@ -15,6 +15,7 @@ public class Setup implements Serializable {
   public Boolean servesAPPs;
   public Boolean servesDIRs;
   public Boolean servesCMDs;
+  public Boolean servesDATs;
   public Boolean servesREGs;
   public Boolean servesSQLs;
   public Boolean servesLIZs;
@@ -48,6 +49,9 @@ public class Setup implements Serializable {
     if (this.servesCMDs == null) {
       this.servesCMDs = false;
     }
+    if (this.servesDATs == null) {
+      this.servesDATs = false;
+    }
     if (this.servesREGs == null) {
       this.servesREGs = false;
     }
@@ -57,10 +61,6 @@ public class Setup implements Serializable {
     if (this.servesLIZs == null) {
       this.servesLIZs = false;
     }
-  }
-
-  public boolean serves_base() {
-    return this.servesREGs || this.servesSQLs;
   }
 
   @Override

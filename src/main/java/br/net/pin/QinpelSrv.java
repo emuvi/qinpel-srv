@@ -34,12 +34,14 @@ public class QinpelSrv {
         "Should we serve directories?").build());
     result.addOption(Option.builder("c").longOpt("cmds").desc("Should we serve commands?")
         .build());
+    result.addOption(Option.builder("t").longOpt("dats").desc(
+        "Should we serve databases access?").build());
     result.addOption(Option.builder("r").longOpt("regs").desc(
         "Should we serve register actions?").build());
     result.addOption(Option.builder("s").longOpt("sqls").desc(
-        "Should we serve SQL scripts?").build());
+        "Should we serve SQL executions?").build());
     result.addOption(Option.builder("l").longOpt("lizs").desc(
-        "Should we serve LIZ scripts?").build());
+        "Should we serve LIZ executions?").build());
     return result;
   }
 
@@ -70,6 +72,9 @@ public class QinpelSrv {
     }
     if (command.hasOption('c')) {
       setup.servesCMDs = true;
+    }
+    if (command.hasOption('t')) {
+      setup.servesDATs = true;
     }
     if (command.hasOption('r')) {
       setup.servesREGs = true;

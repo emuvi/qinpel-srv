@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class QinServer {
 
   private Setup setup;
+  private Users users;
   private Server server;
   private ServletContextHandler context;
 
@@ -26,8 +27,23 @@ public class QinServer {
     this.setup = setup;
   }
 
+  private void loadUsers() {
+    users = new Users();
+    var u1 = new User();
+    u1.name = "admin";
+    u1.pass = "admin";
+    u1.master = true;
+    users.add(u1);
+    var u2 = new User();
+    u2.name = "everton";
+    u2.pass = "everton";
+    u2.master = false;
+    users.add(u2);
+  }
+
   public void start() throws Exception {
     this.setup.setDefaults();
+    this.loadUsers();
     int maxThreads = 100;
     int minThreads = 10;
     int idleTimeout = 120;
@@ -45,6 +61,8 @@ public class QinServer {
     this.server.setConnectors(new Connector[] {connector});
     this.context = new ServletContextHandler();
     this.context.setContextPath("/");
+    this.loadUsers();
+    this.context.setAttribute("QinServer.users", this.users);
     this.server.setHandler(this.context);
     if (this.setup.servesPUBs) {
       this.serves_pubs();
@@ -88,7 +106,13 @@ public class QinServer {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var test = new StringBuilder("Users: ");
+        var users = (Users) req.getServletContext().getAttribute("QinServer.users");
+        for (var user : users) {
+          test.append(user.name);
+          test.append(", ");
+        }
+        resp.getWriter().print(test.toString());
       }
     }), "/app/*");
 

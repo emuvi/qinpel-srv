@@ -1,16 +1,47 @@
 package br.net.pin.qinpel_srv;
 
-import java.util.Map;
+import java.util.List;
 import com.google.gson.Gson;
 
 public class Access {
 
-  public Type type;
-  public Map<String, String> data;
+  public APP app;
+  public DIR dir;
+  public CMD cmd;
+  public DAT dat;
+  public REG reg;
+  public SQL sql;
+  public LIZ liz;
 
-  public enum Type {
-    APP, DIR, CMD, DAT, REG, SQL, LIZ
-  };
+  public class APP {
+    public String name;
+  }
+
+  public class DIR {
+    public String path;
+    public Boolean canWrite;
+  }
+
+  public class CMD {
+    public String name;
+    public List<String> args;
+  }
+
+  public class DAT {
+    public String name;
+  }
+
+  public class REG {
+    public String name;
+  }
+
+  public class SQL {
+    public String path;
+  }
+
+  public class LIZ {
+    public String path;
+  }
 
   @Override
   public String toString() {

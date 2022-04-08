@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ServesPUBs extends HttpServlet {
 
   private static final int DEFAULT_BUFFER_SIZE = 10240; // ..bytes = 10KB.
-  private static final long DEFAULT_EXPIRE_TIME = 604800000L; // ..ms = 1 week.
+  private static final long DEFAULT_EXPIRE_TIME = 86400000L; // ..ms = 1 day.
   private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
 
   private String basePath;

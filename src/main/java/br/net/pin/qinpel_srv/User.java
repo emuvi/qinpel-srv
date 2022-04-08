@@ -1,9 +1,10 @@
 package br.net.pin.qinpel_srv;
 
-import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import com.google.gson.Gson;
 
-public class User implements Serializable {
+public class User {
 
   public String name;
   public String pass;
@@ -11,5 +12,35 @@ public class User implements Serializable {
   public String lang;
   public Boolean master;
   public List<Access> access;
+
+  public void fixDefaults() {
+    if (this.name == null) {
+      this.name = "";
+    }
+    if (this.pass == null) {
+      this.pass = "";
+    }
+    if (this.home == null) {
+      this.home = "";
+    }
+    if (this.lang == null) {
+      this.lang = "";
+    }
+    if (this.master == null) {
+      this.master = false;
+    }
+    if (this.access == null) {
+      this.access = new ArrayList<>();
+    }
+  }
+
+  @Override
+  public String toString() {
+    return new Gson().toJson(this);
+  }
+
+  public static User fromString(String json) {
+    return new Gson().fromJson(json, User.class);
+  }
 
 }

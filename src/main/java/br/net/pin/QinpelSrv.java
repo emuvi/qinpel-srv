@@ -7,10 +7,51 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import br.net.pin.qinpel_srv.Bases;
 import br.net.pin.qinpel_srv.QinServer;
 import br.net.pin.qinpel_srv.Setup;
+import br.net.pin.qinpel_srv.SrvData;
+import br.net.pin.qinpel_srv.Users;
 
 public class QinpelSrv {
+
+  public static void main(String[] args) throws Exception {
+    var options = cmdOptions();
+    var command = new DefaultParser().parse(options, args);
+    if (command.hasOption('?')) {
+      System.out.println(
+          "QinpelSrv (Qinpel Server) is a library and a command program that servers public files, graphical user interfaces, file system access with authorization, command programs dispatchs, databases queries and scripts execution. It is the base of the Pointel platform and the backend of the Qinpel, the Quick Interface for Power Intelligence.");
+      HelpFormatter formatter = new HelpFormatter();
+      formatter.printHelp("qinpel-srv", options);
+      return;
+    }
+    Setup setup;
+    var setupFile = new File("setup.json");
+    if (setupFile.exists()) {
+      setup = Setup.fromString(Files.readString(setupFile.toPath()));
+    } else {
+      setup = new Setup();
+    }
+    setFromCmd(command, setup);
+    Users users;
+    var usersFile = new File("users.json");
+    if (usersFile.exists()) {
+      users = Users.fromString(Files.readString(usersFile.toPath()));
+    } else {
+      users = new Users();
+    }
+    Bases bases;
+    var basesFile = new File("bases.json");
+    if (basesFile.exists()) {
+      bases = Bases.fromString(Files.readString(basesFile.toPath()));
+    } else {
+      bases = new Bases();
+    }
+    setup.fixDefaults();
+    users.fixDefaults();
+    bases.fixDefaults();
+    new QinServer(new SrvData(setup, users, bases)).start();
+  }
 
   public static Options cmdOptions() {
     var result = new Options();
@@ -85,25 +126,6 @@ public class QinpelSrv {
     if (command.hasOption('l')) {
       setup.servesLIZs = true;
     }
-  }
-
-  public static void main(String[] args) throws Exception {
-    var options = cmdOptions();
-    var command = new DefaultParser().parse(options, args);
-    if (command.hasOption('?')) {
-      System.out.println(
-          "QinpelSrv (Qinpel Server) is a library and a command program that servers public files, graphical user interfaces, file system access with authorization, command programs dispatchs, databases queries and scripts execution. It is the base of the Pointel platform and the backend of the Qinpel, the Quick Interface for Power Intelligence.");
-      HelpFormatter formatter = new HelpFormatter();
-      formatter.printHelp("qinpel-srv", options);
-      return;
-    }
-    var setup = new Setup();
-    var setupFile = new File("setup.json");
-    if (setupFile.exists()) {
-      setup = Setup.fromString(Files.readString(setupFile.toPath()));
-    }
-    setFromCmd(command, setup);
-    new QinServer(setup).start();
   }
 
 }

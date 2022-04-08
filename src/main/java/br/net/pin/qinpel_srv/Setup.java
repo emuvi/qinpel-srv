@@ -1,16 +1,18 @@
 package br.net.pin.qinpel_srv;
 
-import java.io.Serializable;
 import java.util.Map;
 import com.google.gson.Gson;
 
-public class Setup implements Serializable {
+public class Setup {
 
   public Boolean serverVerbose;
   public Boolean serverArchive;
   public String serverName;
   public String serverHost;
   public Integer serverPort;
+  public Integer threadsMax;
+  public Integer threadsMin;
+  public Integer threadsIdleTimeout;
   public Boolean servesPUBs;
   public Boolean servesAPPs;
   public Boolean servesDIRs;
@@ -21,7 +23,7 @@ public class Setup implements Serializable {
   public Boolean servesLIZs;
   public Map<String, String> redirects;
 
-  public void setDefaults() {
+  public void fixDefaults() {
     if (this.serverVerbose == null) {
       this.serverVerbose = false;
     }
@@ -36,6 +38,15 @@ public class Setup implements Serializable {
     }
     if (this.serverPort == null) {
       this.serverPort = 5490;
+    }
+    if (this.threadsMax == null) {
+      this.threadsMax = 100;
+    }
+    if (this.threadsMin == null) {
+      this.threadsMin = 10;
+    }
+    if (this.threadsIdleTimeout == null) {
+      this.threadsIdleTimeout = 120;
     }
     if (this.servesPUBs == null) {
       this.servesPUBs = false;

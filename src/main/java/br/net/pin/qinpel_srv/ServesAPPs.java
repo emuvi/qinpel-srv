@@ -15,7 +15,14 @@ public class ServesAPPs {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getPathInfo());
+
+        var srvData = (SrvData) req.getServletContext().getAttribute("QinServer.srvData");
+        var user = Guard.getUser(srvData, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          return;
+        }
+        resp.getWriter().print(srvData.setup.serverHost);
       }
     }), "/app/*");
 

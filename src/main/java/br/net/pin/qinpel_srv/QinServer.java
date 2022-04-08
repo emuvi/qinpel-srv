@@ -65,7 +65,7 @@ public class QinServer {
     if (this.srvData.setup.servesLIZs) {
       this.serves_lizs();
     }
-    this.serves_utils();
+    this.serves_aims();
   }
 
   private void serves_pubs() {
@@ -110,9 +110,9 @@ public class QinServer {
     ServesLIZs.init(this.context);
   }
 
-  private void serves_utils() {
+  private void serves_aims() {
     System.out.println("Serving Utils...");
-    ServesUtils.init(this.context);
+    ServesAIMs.init(this.context, this.srvData.setup);
   }
 
   public void start() throws Exception {

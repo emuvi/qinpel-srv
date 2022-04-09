@@ -1,15 +1,15 @@
-package br.net.pin.qinpel_srv;
+package br.net.pin.qinpel_srv.hook;
 
 import java.io.IOException;
-import java.util.Map;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import br.net.pin.qinpel_srv.data.Setup;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ServesAIMs {
+public class ServerUtils {
 
   public static void init(ServletContextHandler context, Setup setup) {
     context.addServlet(new ServletHolder(new HttpServlet() {

@@ -1,4 +1,4 @@
-package br.net.pin.qinpel_srv;
+package br.net.pin.qinpel_srv.hook;
 
 import java.io.IOException;
 import org.eclipse.jetty.servlet.ServletContextHandler;

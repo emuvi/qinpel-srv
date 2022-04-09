@@ -1,4 +1,4 @@
-package br.net.pin.qinpel_srv;
+package br.net.pin.qinpel_srv.hook;
 
 import java.io.IOException;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ServesREGs {
+public class ServesLIZs {
 
   public static void init(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
@@ -17,7 +17,7 @@ public class ServesREGs {
           throws ServletException, IOException {
         resp.getWriter().print(req.getRequestURI());
       }
-    }), "/reg/new/*");
+    }), "/liz/*");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
@@ -25,23 +25,7 @@ public class ServesREGs {
           throws ServletException, IOException {
         resp.getWriter().print(req.getRequestURI());
       }
-    }), "/reg/ask/*");
-
-    context.addServlet(new ServletHolder(new HttpServlet() {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-          throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
-      }
-    }), "/reg/set/*");
-
-    context.addServlet(new ServletHolder(new HttpServlet() {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-          throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
-      }
-    }), "/reg/del/*");
+    }), "/list/lizs");
   }
 
 }

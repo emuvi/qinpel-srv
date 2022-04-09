@@ -1,4 +1,4 @@
-package br.net.pin.qinpel_srv;
+package br.net.pin.qinpel_srv.data;
 
 import java.util.ArrayList;
 import java.util.List;

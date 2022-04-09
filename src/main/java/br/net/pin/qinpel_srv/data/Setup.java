@@ -1,5 +1,6 @@
-package br.net.pin.qinpel_srv;
+package br.net.pin.qinpel_srv.data;
 
+import java.util.HashMap;
 import java.util.Map;
 import com.google.gson.Gson;
 
@@ -71,6 +72,9 @@ public class Setup {
     }
     if (this.servesLIZs == null) {
       this.servesLIZs = false;
+    }
+    if (this.redirects == null) {
+      this.redirects = new HashMap<>();
     }
   }
 

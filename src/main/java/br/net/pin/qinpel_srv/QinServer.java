@@ -9,10 +9,21 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import br.net.pin.qinpel_srv.data.Runny;
+import br.net.pin.qinpel_srv.hook.ServerAuth;
+import br.net.pin.qinpel_srv.hook.ServerUtils;
+import br.net.pin.qinpel_srv.hook.ServesAPPs;
+import br.net.pin.qinpel_srv.hook.ServesCMDs;
+import br.net.pin.qinpel_srv.hook.ServesDATs;
+import br.net.pin.qinpel_srv.hook.ServesDIRs;
+import br.net.pin.qinpel_srv.hook.ServesLIZs;
+import br.net.pin.qinpel_srv.hook.ServesPUBs;
+import br.net.pin.qinpel_srv.hook.ServesREGs;
+import br.net.pin.qinpel_srv.hook.ServesSQLs;
 
 public class QinServer {
 
-  private final SrvData srvData;
+  private final Runny runny;
   private final QueuedThreadPool threadPool;
   private final Server server;
   private final HttpConfiguration httpConfig;
@@ -20,52 +31,58 @@ public class QinServer {
   private final ServerConnector connector;
   private final ServletContextHandler context;
 
-  public QinServer(SrvData srvData) {
-    this.srvData = srvData;
-    this.threadPool = new QueuedThreadPool(this.srvData.setup.threadsMax,
-        this.srvData.setup.threadsMin, this.srvData.setup.threadsIdleTimeout);
+  public QinServer(Runny runny) {
+    this.runny = runny;
+    this.threadPool = new QueuedThreadPool(this.runny.setup.threadsMax,
+        this.runny.setup.threadsMin, this.runny.setup.threadsIdleTimeout);
     this.server = new Server(this.threadPool);
     this.httpConfig = new HttpConfiguration();
     this.httpConfig.setSendDateHeader(false);
     this.httpConfig.setSendServerVersion(false);
     this.httpFactory = new HttpConnectionFactory(this.httpConfig);
     this.connector = new ServerConnector(this.server, httpFactory);
-    connector.setHost(this.srvData.setup.serverHost);
-    connector.setPort(this.srvData.setup.serverPort);
+    connector.setHost(this.runny.setup.serverHost);
+    connector.setPort(this.runny.setup.serverPort);
     this.server.setConnectors(new Connector[] {this.connector});
     this.context = new ServletContextHandler();
     this.context.setContextPath("/");
-    this.context.setAttribute("QinServer.srvData", this.srvData);
+    this.context.setAttribute("QinServer.runny", this.runny);
     this.server.setHandler(this.context);
     this.init_serves();
   }
 
   private void init_serves() {
-    if (this.srvData.setup.servesPUBs) {
+    this.server_auth();
+    if (this.runny.setup.servesPUBs) {
       this.serves_pubs();
     }
-    if (this.srvData.setup.servesAPPs) {
+    if (this.runny.setup.servesAPPs) {
       this.serves_apps();
     }
-    if (this.srvData.setup.servesDIRs) {
+    if (this.runny.setup.servesDIRs) {
       this.serves_dirs();
     }
-    if (this.srvData.setup.servesCMDs) {
+    if (this.runny.setup.servesCMDs) {
       this.serves_cmds();
     }
-    if (this.srvData.setup.servesDATs) {
+    if (this.runny.setup.servesDATs) {
       this.serves_dats();
     }
-    if (this.srvData.setup.servesREGs) {
+    if (this.runny.setup.servesREGs) {
       this.serves_regs();
     }
-    if (this.srvData.setup.servesSQLs) {
+    if (this.runny.setup.servesSQLs) {
       this.serves_sqls();
     }
-    if (this.srvData.setup.servesLIZs) {
+    if (this.runny.setup.servesLIZs) {
       this.serves_lizs();
     }
-    this.serves_aims();
+    this.server_utils();
+  }
+
+  private void server_auth() {
+    System.out.println("Serving Auths...");
+    ServerAuth.init(this.context);
   }
 
   private void serves_pubs() {
@@ -110,9 +127,9 @@ public class QinServer {
     ServesLIZs.init(this.context);
   }
 
-  private void serves_aims() {
+  private void server_utils() {
     System.out.println("Serving Utils...");
-    ServesAIMs.init(this.context, this.srvData.setup);
+    ServerUtils.init(this.context, this.runny.setup);
   }
 
   public void start() throws Exception {

@@ -7,11 +7,11 @@ import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import br.net.pin.qinpel_srv.Bases;
 import br.net.pin.qinpel_srv.QinServer;
-import br.net.pin.qinpel_srv.Setup;
-import br.net.pin.qinpel_srv.SrvData;
-import br.net.pin.qinpel_srv.Users;
+import br.net.pin.qinpel_srv.data.Bases;
+import br.net.pin.qinpel_srv.data.Runny;
+import br.net.pin.qinpel_srv.data.Setup;
+import br.net.pin.qinpel_srv.data.Users;
 
 public class QinpelSrv {
 
@@ -50,7 +50,7 @@ public class QinpelSrv {
     setup.fixDefaults();
     users.fixDefaults();
     bases.fixDefaults();
-    new QinServer(new SrvData(setup, users, bases)).start();
+    new QinServer(new Runny(setup, users, bases)).start();
   }
 
   public static Options cmdOptions() {

@@ -1,8 +1,10 @@
-package br.net.pin.qinpel_srv;
+package br.net.pin.qinpel_srv.hook;
 
 import java.io.IOException;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import br.net.pin.qinpel_srv.data.Runny;
+import br.net.pin.qinpel_srv.work.Guard;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,14 +17,13 @@ public class ServesAPPs {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-
-        var srvData = (SrvData) req.getServletContext().getAttribute("QinServer.srvData");
-        var user = Guard.getUser(srvData, req);
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
         if (user == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
         }
-        resp.getWriter().print(srvData.setup.serverHost);
+        resp.getWriter().print(onWay.setup.serverHost);
       }
     }), "/app/*");
 

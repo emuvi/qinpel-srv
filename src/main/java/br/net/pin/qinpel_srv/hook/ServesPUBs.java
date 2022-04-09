@@ -44,27 +44,27 @@ public class ServesPUBs extends HttpServlet {
   }
 
   @Override
-  protected void doHead(HttpServletRequest request, HttpServletResponse response)
+  protected void doHead(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    processRequest(request, response, false);
+    processRequest(req, resp, false);
   }
 
   @Override
-  protected void doGet(HttpServletRequest request, HttpServletResponse response)
+  protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
-    processRequest(request, response, true);
+    processRequest(req, resp, true);
   }
 
-  private void processRequest(HttpServletRequest request, HttpServletResponse response,
+  private void processRequest(HttpServletRequest req, HttpServletResponse resp,
       boolean content) throws IOException {
-    var requestedFile = request.getPathInfo();
-    if (requestedFile == null) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+    var reqFile = req.getPathInfo();
+    if (reqFile == null) {
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
-    var file = new File(basePath, URLDecoder.decode(requestedFile, "UTF-8"));
+    var file = new File(basePath, URLDecoder.decode(reqFile, "UTF-8"));
     if (!file.exists()) {
-      response.sendError(HttpServletResponse.SC_NOT_FOUND);
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
       return;
     }
 
@@ -74,46 +74,46 @@ public class ServesPUBs extends HttpServlet {
     var eTag = fileName + "_" + length + "_" + lastModified;
     long expires = System.currentTimeMillis() + DEFAULT_EXPIRE_TIME;
 
-    var ifNoneMatch = request.getHeader("If-None-Match");
+    var ifNoneMatch = req.getHeader("If-None-Match");
     if (ifNoneMatch != null && matches(ifNoneMatch, eTag)) {
-      response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-      response.setHeader("ETag", eTag);
-      response.setDateHeader("Expires", expires);
+      resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+      resp.setHeader("ETag", eTag);
+      resp.setDateHeader("Expires", expires);
       return;
     }
-    var ifModifiedSince = request.getDateHeader("If-Modified-Since");
+    var ifModifiedSince = req.getDateHeader("If-Modified-Since");
     if (ifNoneMatch == null && ifModifiedSince != -1 && ifModifiedSince
         + 1000 > lastModified) {
-      response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-      response.setHeader("ETag", eTag);
-      response.setDateHeader("Expires", expires);
+      resp.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+      resp.setHeader("ETag", eTag);
+      resp.setDateHeader("Expires", expires);
       return;
     }
-    var ifMatch = request.getHeader("If-Match");
+    var ifMatch = req.getHeader("If-Match");
     if (ifMatch != null && !matches(ifMatch, eTag)) {
-      response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+      resp.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
       return;
     }
-    var ifUnmodifiedSince = request.getDateHeader("If-Unmodified-Since");
+    var ifUnmodifiedSince = req.getDateHeader("If-Unmodified-Since");
     if (ifUnmodifiedSince != -1 && ifUnmodifiedSince + 1000 <= lastModified) {
-      response.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
+      resp.sendError(HttpServletResponse.SC_PRECONDITION_FAILED);
       return;
     }
 
     var full = new Range(0, length - 1, length);
     var ranges = new ArrayList<Range>();
-    var range = request.getHeader("Range");
+    var range = req.getHeader("Range");
     if (range != null) {
       if (!range.matches("^bytes=\\d*-\\d*(,\\d*-\\d*)*$")) {
-        response.setHeader("Content-Range", "bytes */" + length);
-        response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+        resp.setHeader("Content-Range", "bytes */" + length);
+        resp.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
         return;
       }
 
-      var ifRange = request.getHeader("If-Range");
+      var ifRange = req.getHeader("If-Range");
       if (ifRange != null && !ifRange.equals(eTag)) {
         try {
-          var ifRangeTime = request.getDateHeader("If-Range");
+          var ifRangeTime = req.getDateHeader("If-Range");
           if (ifRangeTime != -1 && ifRangeTime + 1000 < lastModified) {
             ranges.add(full);
           }
@@ -133,8 +133,8 @@ public class ServesPUBs extends HttpServlet {
             end = length - 1;
           }
           if (start > end) {
-            response.setHeader("Content-Range", "bytes */" + length); // Required in 416.
-            response.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
+            resp.setHeader("Content-Range", "bytes */" + length); // Required in 416.
+            resp.sendError(HttpServletResponse.SC_REQUESTED_RANGE_NOT_SATISFIABLE);
             return;
           }
           ranges.add(new Range(start, end, length));
@@ -150,54 +150,54 @@ public class ServesPUBs extends HttpServlet {
       contentType = "application/octet-stream";
     }
     if (contentType.startsWith("text")) {
-      var acceptEncoding = request.getHeader("Accept-Encoding");
+      var acceptEncoding = req.getHeader("Accept-Encoding");
       acceptsGzip = acceptEncoding != null && accepts(acceptEncoding, "gzip");
       contentType += ";charset=UTF-8";
     } else if (!contentType.startsWith("image")) {
-      var accept = request.getHeader("Accept");
+      var accept = req.getHeader("Accept");
       disposition = accept != null && accepts(accept, contentType) ? "inline"
           : "attachment";
     }
 
-    response.reset();
-    response.setBufferSize(DEFAULT_BUFFER_SIZE);
-    response.setHeader("Content-Disposition", disposition + ";filename=\"" + fileName
+    resp.reset();
+    resp.setBufferSize(DEFAULT_BUFFER_SIZE);
+    resp.setHeader("Content-Disposition", disposition + ";filename=\"" + fileName
         + "\"");
-    response.setHeader("Accept-Ranges", "bytes");
-    response.setHeader("ETag", eTag);
-    response.setDateHeader("Last-Modified", lastModified);
-    response.setDateHeader("Expires", expires);
+    resp.setHeader("Accept-Ranges", "bytes");
+    resp.setHeader("ETag", eTag);
+    resp.setDateHeader("Last-Modified", lastModified);
+    resp.setDateHeader("Expires", expires);
 
     RandomAccessFile input = null;
     OutputStream output = null;
     try {
       input = new RandomAccessFile(file, "r");
-      output = response.getOutputStream();
+      output = resp.getOutputStream();
       if (ranges.isEmpty() || ranges.get(0) == full) {
         var r = full;
-        response.setContentType(contentType);
+        resp.setContentType(contentType);
         if (content) {
           if (acceptsGzip) {
-            response.setHeader("Content-Encoding", "gzip");
+            resp.setHeader("Content-Encoding", "gzip");
             output = new GZIPOutputStream(output, DEFAULT_BUFFER_SIZE);
           } else {
-            response.setHeader("Content-Length", String.valueOf(r.length));
+            resp.setHeader("Content-Length", String.valueOf(r.length));
           }
           copy(input, output, r.start, r.length);
         }
       } else if (ranges.size() == 1) {
         var r = ranges.get(0);
-        response.setContentType(contentType);
-        response.setHeader("Content-Range", "bytes " + r.start + "-" + r.end + "/"
+        resp.setContentType(contentType);
+        resp.setHeader("Content-Range", "bytes " + r.start + "-" + r.end + "/"
             + r.total);
-        response.setHeader("Content-Length", String.valueOf(r.length));
-        response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT); // 206.
+        resp.setHeader("Content-Length", String.valueOf(r.length));
+        resp.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT); // 206.
         if (content) {
           copy(input, output, r.start, r.length);
         }
       } else {
-        response.setContentType("multipart/byteranges; boundary=" + MULTIPART_BOUNDARY);
-        response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+        resp.setContentType("multipart/byteranges; boundary=" + MULTIPART_BOUNDARY);
+        resp.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
         if (content) {
           var sos = (ServletOutputStream) output;
           for (var r : ranges) {

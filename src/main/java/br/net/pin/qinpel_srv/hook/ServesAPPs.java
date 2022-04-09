@@ -1,6 +1,10 @@
 package br.net.pin.qinpel_srv.hook;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URLDecoder;
+import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import br.net.pin.qinpel_srv.data.Runny;
@@ -17,6 +21,16 @@ public class ServesAPPs {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
+        var reqFile = URLDecoder.decode(req.getPathInfo(), "UTF-8");
+        var file = new File("app", reqFile);
+        if (!file.exists()) {
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+          return;
+        }
+        if (reqFile.startsWith("/qinpel-app/")) {
+          sendAppSrc(file, resp);
+          return;
+        }
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
         var user = Guard.getUser(onWay, req);
         if (user == null) {
@@ -34,6 +48,11 @@ public class ServesAPPs {
         resp.getWriter().print(req.getRequestURI());
       }
     }), "/list/apps");
+  }
+
+  private static void sendAppSrc(File file, HttpServletResponse resp) throws IOException {
+    resp.setContentLength((int) file.length());
+    IOUtils.copy(new FileInputStream(file), resp.getOutputStream());
   }
 
 }

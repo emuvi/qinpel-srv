@@ -46,7 +46,7 @@ public class QinServer {
     connector.setPort(this.runny.setup.serverPort);
     this.server.setConnectors(new Connector[] {this.connector});
     this.context = new ServletContextHandler();
-    this.context.setContextPath("/");
+    this.context.setContextPath("");
     this.context.setAttribute("QinServer.runny", this.runny);
     this.server.setHandler(this.context);
     this.init_serves();

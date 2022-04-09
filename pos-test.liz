@@ -1,0 +1,31 @@
+#!/bin/liz
+
+local wd = Liz.wd()
+local project = Liz.path_name(wd)
+local dev_path = Liz.path_parent_find(wd, "Devs")
+if dev_path == "" then
+    print("Could not found the Devs path.")
+    return
+end
+local tst_path = Liz.path_join(dev_path, "Test")
+local cmd_dest = Liz.path_join(tst_path, "cmd")
+local pro_dest = Liz.path_join(cmd_dest, project)
+local origin = Liz.path_join(pro_dest, project .. ".jar")
+local destiny = Liz.path_join(tst_path, project .. ".jar")
+Liz.rm(destiny)
+Liz.cp(origin, destiny)
+
+local origin_lib = Liz.path_join(pro_dest, "lib")
+local destiny_lib = Liz.path_join(tst_path, "lib")
+Liz.rm(destiny_lib)
+Liz.cp(origin_lib, destiny_lib)
+
+local origin_start = "start.sh"
+if Liz.is_win() then
+    origin_start = "start.bat"
+end
+local destiny_start = Liz.path_join(tst_path, origin_start)
+Liz.rm(destiny_start)
+Liz.cp(origin_start, destiny_start)
+
+Liz.rm(pro_dest)

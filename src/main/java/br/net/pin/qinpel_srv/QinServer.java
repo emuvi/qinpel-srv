@@ -1,6 +1,7 @@
 package br.net.pin.qinpel_srv;
 
 import java.io.File;
+import java.nio.file.Files;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -31,7 +32,7 @@ public class QinServer {
   private final ServerConnector connector;
   private final ServletContextHandler context;
 
-  public QinServer(Runny runny) {
+  public QinServer(Runny runny) throws Exception {
     this.runny = runny;
     this.threadPool = new QueuedThreadPool(this.runny.setup.threadsMax,
         this.runny.setup.threadsMin, this.runny.setup.threadsIdleTimeout);
@@ -51,7 +52,7 @@ public class QinServer {
     this.init_serves();
   }
 
-  private void init_serves() {
+  private void init_serves() throws Exception {
     this.server_auth();
     if (this.runny.setup.servesPUBs) {
       this.serves_pubs();
@@ -85,10 +86,14 @@ public class QinServer {
     ServerAuth.init(this.context);
   }
 
-  private void serves_pubs() {
+  private void serves_pubs() throws Exception {
     System.out.println("Serving PUBs...");
     var holder = new ServletHolder(new ServesPUBs());
-    holder.setInitParameter("basePath", new File("./pub").getAbsolutePath());
+    var pubDir = new File("pub");
+    if (!pubDir.exists()) {
+      Files.createDirectories(pubDir.toPath());
+    }
+    holder.setInitParameter("basePath", pubDir.getAbsolutePath());
     this.context.addServlet(holder, "/pub/*");
   }
 

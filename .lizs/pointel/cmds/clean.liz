@@ -1,0 +1,7 @@
+#!/bin/liz
+
+print("Cleaning...")
+Liz.rm("build")
+Liz.rm("target")
+Liz.rm("Cargo.lock")
+print("Done clean command")

@@ -64,9 +64,11 @@ public class QinpelSrv {
     result.addOption(Option.builder("n").longOpt("name").hasArg().desc(
         "On behalf of what name should we serve?").build());
     result.addOption(Option.builder("h").longOpt("host").hasArg().desc(
-        "On behalf of what name should we serve?").build());
+        "On what host should we serve?").build());
     result.addOption(Option.builder("p").longOpt("port").hasArg().desc(
         "On what port should we serve?").build());
+    result.addOption(Option.builder("f").longOpt("folder").hasArg().desc(
+        "On what folder should we serve?").build());
     result.addOption(Option.builder("u").longOpt("pubs").desc(
         "Should we serve public files?").build());
     result.addOption(Option.builder("a").longOpt("apps").desc(
@@ -101,6 +103,9 @@ public class QinpelSrv {
     }
     if (command.hasOption('p')) {
       setup.serverPort = Integer.parseInt(command.getOptionValue('p'));
+    }
+    if (command.hasOption('f')) {
+      setup.serverFolder = command.getOptionValue('f');
     }
     if (command.hasOption('u')) {
       setup.servesPUBs = true;

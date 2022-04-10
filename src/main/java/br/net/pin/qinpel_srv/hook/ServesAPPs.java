@@ -9,6 +9,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.work.Guard;
+import br.net.pin.qinpel_srv.work.Lists;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -17,37 +18,58 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ServesAPPs {
 
   public static void init(ServletContextHandler context) {
+
     context.addServlet(new ServletHolder(new HttpServlet() {
+
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var reqFile = URLDecoder.decode(req.getPathInfo(), "UTF-8");
-        var file = new File("app", reqFile);
-        if (!file.exists()) {
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var reqURL = URLDecoder.decode(req.getPathInfo(), "UTF-8");
+        var reqFile = new File(onWay.setup.serverFolder, "app" + reqURL);
+        if (!reqFile.exists()) {
           resp.sendError(HttpServletResponse.SC_NOT_FOUND);
           return;
         }
-        if (reqFile.startsWith("/qinpel-app/")) {
-          sendAppSrc(file, resp);
+        if (reqURL.startsWith("/qinpel-app/")) {
+          sendAppSrc(reqFile, resp);
           return;
         }
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          return;
+        }
+        var appName = reqURL.substring(1);
+        var idxSlash = appName.indexOf('/');
+        if (idxSlash != -1) {
+          appName = appName.substring(0, idxSlash);
+        }
+        if (!Guard.allowAPP(appName, user)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          return;
+        }
+        sendAppSrc(reqFile, resp);
+      }
+
+    }), "/app/*");
+
+    context.addServlet(new ServletHolder(new HttpServlet() {
+
+      @Override
+      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+          throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
         var user = Guard.getUser(onWay, req);
         if (user == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
         }
-        resp.getWriter().print(onWay.setup.serverHost);
+        resp.getWriter().print(Lists.listApps(onWay, user));
       }
-    }), "/app/*");
 
-    context.addServlet(new ServletHolder(new HttpServlet() {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-          throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
-      }
     }), "/list/apps");
+
   }
 
   private static void sendAppSrc(File file, HttpServletResponse resp) throws IOException {

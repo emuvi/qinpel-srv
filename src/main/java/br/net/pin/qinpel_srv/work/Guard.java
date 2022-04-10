@@ -1,13 +1,22 @@
 package br.net.pin.qinpel_srv.work;
 
+import java.util.Objects;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.User;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class Guard {
 
-  public static boolean allowAPP(String name, User forUser, Runny onWay) {
-    return true;
+  public static boolean allowAPP(String name, User forUser) {
+    if (forUser.master) {
+      return true;
+    }
+    for (var access : forUser.access) {
+      if (access.app != null && Objects.equals(access.app.name, name)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public static User getUser(Runny onWay, HttpServletRequest req) {

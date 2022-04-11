@@ -1,5 +1,6 @@
 package br.net.pin.qinpel_srv.data;
 
+import java.io.File;
 import java.util.List;
 import com.google.gson.Gson;
 import br.net.pin.qinpel_srv.work.Utils;
@@ -59,7 +60,7 @@ public class Access {
       if (this.dir.path == null || this.dir.path.isEmpty()) {
         this.dir = null;
       } else {
-        this.dir.path = Utils.fixPath(this.dir.path);
+        this.dir.path = Utils.fixPath(this.dir.path, new File("dir").getAbsolutePath());
         this.dir.mutable = this.dir.mutable != null ? this.dir.mutable : false;
       }
     }
@@ -84,21 +85,21 @@ public class Access {
       if (this.sql.path == null || this.sql.path.isEmpty()) {
         this.sql = null;
       } else {
-        this.sql.path = Utils.fixPath(this.sql.path);
+        this.sql.path = Utils.fixPath(this.sql.path, new File("sql").getAbsolutePath());
       }
     }
     if (this.liz != null) {
       if (this.liz.path == null || this.liz.path.isEmpty()) {
         this.liz = null;
       } else {
-        this.liz.path = Utils.fixPath(this.liz.path);
+        this.liz.path = Utils.fixPath(this.liz.path, new File("liz").getAbsolutePath());
       }
     }
     if (this.guz != null) {
       if (this.guz.path == null || this.guz.path.isEmpty()) {
         this.guz = null;
       } else {
-        this.guz.path = Utils.fixPath(this.guz.path);
+        this.guz.path = Utils.fixPath(this.guz.path, new File("guz").getAbsolutePath());
       }
     }
   }

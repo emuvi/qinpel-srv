@@ -34,7 +34,7 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        onePath.path = Utils.fixPath(onePath.path);
+        onePath.path = Utils.fixPath(onePath.path, user.home);
         if (!Guard.allowDIR(onePath.path, user, false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
@@ -56,6 +56,24 @@ public class ServesDIRs {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
+            var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var onePath = OnePath.fromString(body);
+        if (onePath.path == null || onePath.path.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
+          return;
+        }
+        onePath.path = Utils.fixPath(onePath.path, user.home);
+        if (!Guard.allowDIR(onePath.path, user, false)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          return;
+        }
+        var path = new File(onePath.path);
         resp.getWriter().print(req.getRequestURI());
       }
     }), "/dir/new");

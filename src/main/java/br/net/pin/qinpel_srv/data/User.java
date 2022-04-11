@@ -1,8 +1,10 @@
 package br.net.pin.qinpel_srv.data;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
+import br.net.pin.qinpel_srv.work.Utils;
 
 public class User {
   public String name;
@@ -19,8 +21,8 @@ public class User {
     if (this.pass == null) {
       this.pass = "";
     }
-    if (this.home == null) {
-      this.home = "";
+    if (this.home == null || this.home.isEmpty()) {
+      this.home = Utils.fixPath(this.name, new File("dir").getAbsolutePath());
     }
     if (this.lang == null) {
       this.lang = "";

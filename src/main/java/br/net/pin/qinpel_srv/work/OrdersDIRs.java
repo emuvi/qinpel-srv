@@ -1,6 +1,8 @@
 package br.net.pin.qinpel_srv.work;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 public class OrdersDIRs {
   public static String dirList(File path) {
@@ -14,5 +16,10 @@ public class OrdersDIRs {
       result.append("\n");
     }
     return result.toString();
+  }
+
+  public static String dirNew(File path) throws IOException {
+    Files.createDirectories(path.toPath());
+    return "Folder created: " + path.getAbsolutePath();
   }
 }

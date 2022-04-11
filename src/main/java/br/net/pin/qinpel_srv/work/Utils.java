@@ -14,7 +14,28 @@ public class Utils {
     return result.toString();
   }
 
-  public static String fixPath(String path) {
-    return path.replace("\\", "/");
+  public static boolean isAbsolute(String path) {
+    var sep = path.contains("\\") ? "\\" : "/";
+    if (path.startsWith(sep)) {
+      return true;
+    }
+    var firstSlash = path.indexOf(sep);
+    if (firstSlash > -1) {
+      var firstSegment = path.substring(0, firstSlash);
+      if (firstSegment.contains(":")) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public static String fixPath(String path, String parent) {
+    path = path.replace("\\", "/");
+    if (!isAbsolute(path)) {
+      parent = parent.replace("\\", "/");
+      return parent + (parent.endsWith("/") ? "" : "/") + path;
+    } else {
+      return path.replace("\\", "/"); // [ TODO ] - Use Pathed class
+    }
   }
 }

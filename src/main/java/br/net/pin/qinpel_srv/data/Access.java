@@ -13,7 +13,7 @@ public class Access {
   public REG reg;
   public SQL sql;
   public LIZ liz;
-  public GUZ guz;
+  public GIZ giz;
 
   public class APP {
     public String name;
@@ -46,7 +46,7 @@ public class Access {
     public String path;
   }
 
-  public class GUZ {
+  public class GIZ {
     public String path;
   }
 
@@ -60,7 +60,7 @@ public class Access {
       if (this.dir.path == null || this.dir.path.isEmpty()) {
         this.dir = null;
       } else {
-        this.dir.path = Utils.fixPath(this.dir.path, new File("dir").getAbsolutePath());
+        this.dir.path = new File(this.dir.path).getAbsolutePath();
         this.dir.mutable = this.dir.mutable != null ? this.dir.mutable : false;
       }
     }
@@ -85,21 +85,21 @@ public class Access {
       if (this.sql.path == null || this.sql.path.isEmpty()) {
         this.sql = null;
       } else {
-        this.sql.path = Utils.fixPath(this.sql.path, new File("sql").getAbsolutePath());
+        this.sql.path = new File(this.sql.path).getAbsolutePath();
       }
     }
     if (this.liz != null) {
       if (this.liz.path == null || this.liz.path.isEmpty()) {
         this.liz = null;
       } else {
-        this.liz.path = Utils.fixPath(this.liz.path, new File("liz").getAbsolutePath());
+        this.liz.path = new File(this.liz.path).getAbsolutePath();
       }
     }
-    if (this.guz != null) {
-      if (this.guz.path == null || this.guz.path.isEmpty()) {
-        this.guz = null;
+    if (this.giz != null) {
+      if (this.giz.path == null || this.giz.path.isEmpty()) {
+        this.giz = null;
       } else {
-        this.guz.path = Utils.fixPath(this.guz.path, new File("guz").getAbsolutePath());
+        this.giz.path = new File(this.giz.path).getAbsolutePath();
       }
     }
   }

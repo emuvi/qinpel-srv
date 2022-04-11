@@ -163,8 +163,8 @@ public class OrdersPUBs {
         }
       }
     } finally {
-      close(output);
-      close(input);
+      Utils.close(output);
+      Utils.close(input);
     }
   }
 
@@ -206,15 +206,6 @@ public class OrdersPUBs {
           output.write(buffer, 0, (int) toRead + read);
           break;
         }
-      }
-    }
-  }
-
-  private static void close(Closeable resource) {
-    if (resource != null) {
-      try {
-        resource.close();
-      } catch (IOException ignore) {
       }
     }
   }

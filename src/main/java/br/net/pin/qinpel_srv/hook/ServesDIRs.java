@@ -1,12 +1,14 @@
 package br.net.pin.qinpel_srv.hook;
 
-import java.io.File;
 import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import br.net.pin.qinpel_srv.data.OnePath;
+import br.net.pin.qinpel_srv.data.PathRead;
+import br.net.pin.qinpel_srv.data.PathWrite;
 import br.net.pin.qinpel_srv.data.Runny;
+import br.net.pin.qinpel_srv.data.TwoPath;
 import br.net.pin.qinpel_srv.work.Guard;
 import br.net.pin.qinpel_srv.work.OrdersDIRs;
 import br.net.pin.qinpel_srv.work.Utils;
@@ -20,12 +22,12 @@ public class ServesDIRs {
   public static void init(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
         var user = Guard.getUser(onWay, req);
         if (user == null) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
         var body = IOUtils.toString(req.getReader());
@@ -34,18 +36,19 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        onePath.path = Utils.fixPath(onePath.path, user.home);
-        if (!Guard.allowDIR(onePath.path, user, false)) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        var path = Utils.newFile(onePath.path, user.home);
+        if (!Guard.allowDIR(path, user, false)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to the path: " + path);
           return;
         }
-        var path = new File(onePath.path);
         if (!path.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path: " + path);
           return;
         }
         if (!path.isDirectory()) {
-          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "The path is not a directory");
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "It is not a directory the path: " + path);
           return;
         }
         resp.getWriter().print(OrdersDIRs.dirList(path));
@@ -54,12 +57,12 @@ public class ServesDIRs {
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-            var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
         var user = Guard.getUser(onWay, req);
         if (user == null) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
         var body = IOUtils.toString(req.getReader());
@@ -68,86 +71,356 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        onePath.path = Utils.fixPath(onePath.path, user.home);
-        if (!Guard.allowDIR(onePath.path, user, false)) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+        var path = Utils.newFile(onePath.path, user.home);
+        if (!Guard.allowDIR(path, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the path: " + path);
           return;
         }
-        var path = new File(onePath.path);
-        resp.getWriter().print(req.getRequestURI());
+        resp.getWriter().print(OrdersDIRs.dirNew(path));
       }
     }), "/dir/new");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var twoPath = TwoPath.fromString(body);
+        if (twoPath.origin == null || twoPath.origin.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a origin");
+          return;
+        }
+        if (twoPath.destiny == null || twoPath.destiny.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a destiny");
+          return;
+        }
+        var origin = Utils.newFile(twoPath.origin, user.home);
+        var destiny = Utils.newFile(twoPath.destiny, user.home);
+        if (!Guard.allowDIR(origin, user, false)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to the origin: " + origin);
+          return;
+        }
+        if (!Guard.allowDIR(destiny, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the destiny: " + destiny);
+          return;
+        }
+        if (!origin.exists()) {
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin: "
+              + origin);
+          return;
+        }
+        if (!origin.isDirectory()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "It is not a directory the origin: " + origin);
+          return;
+        }
+        resp.getWriter().print(OrdersDIRs.dirCopy(origin, destiny));
       }
     }), "/dir/copy");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var twoPath = TwoPath.fromString(body);
+        if (twoPath.origin == null || twoPath.origin.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a origin");
+          return;
+        }
+        if (twoPath.destiny == null || twoPath.destiny.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a destiny");
+          return;
+        }
+        var origin = Utils.newFile(twoPath.origin, user.home);
+        var destiny = Utils.newFile(twoPath.destiny, user.home);
+        if (!Guard.allowDIR(origin, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the origin: " + origin);
+          return;
+        }
+        if (!Guard.allowDIR(destiny, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the destiny: " + destiny);
+          return;
+        }
+        if (!origin.exists()) {
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin: "
+              + origin);
+          return;
+        }
+        if (!origin.isDirectory()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "It is not a directory the origin: " + origin);
+          return;
+        }
+        resp.getWriter().print(OrdersDIRs.dirMove(origin, destiny));
       }
     }), "/dir/move");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var onePath = OnePath.fromString(body);
+        if (onePath.path == null || onePath.path.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
+          return;
+        }
+        var path = Utils.newFile(onePath.path, user.home);
+        if (!Guard.allowDIR(path, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the path: " + path);
+          return;
+        }
+        if (!path.exists()) {
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path: " + path);
+          return;
+        }
+        if (!path.isDirectory()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "It is not a directory the path: " + path);
+          return;
+        }
+        resp.getWriter().print(OrdersDIRs.dirDel(path));
       }
     }), "/dir/del");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var pathRead = PathRead.fromString(body);
+        if (pathRead.path == null || pathRead.path.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
+          return;
+        }
+        var path = Utils.newFile(pathRead.path, user.home);
+        if (!Guard.allowDIR(path, user, false)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to the path: " + path);
+          return;
+        }
+        pathRead.base64 = pathRead.base64 != null ? pathRead.base64 : false;
+        resp.getWriter().print(OrdersDIRs.fileRead(path, pathRead.base64,
+            pathRead.rangeStart, pathRead.rangeLength));
       }
     }), "/file/read");
 
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var pathWrite = PathWrite.fromString(body);
+        if (pathWrite.path == null || pathWrite.path.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
+          return;
+        }
+        var path = Utils.newFile(pathWrite.path, user.home);
+        if (!Guard.allowDIR(path, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the path: " + path);
+          return;
+        }
+        pathWrite.base64 = pathWrite.base64 != null ? pathWrite.base64 : false;
+        resp.getWriter().print(OrdersDIRs.fileWrite(path, pathWrite.base64,
+            pathWrite.data, pathWrite.rangeStart));
       }
     }), "/file/write");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var pathWrite = PathWrite.fromString(body);
+        if (pathWrite.path == null || pathWrite.path.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
+          return;
+        }
+        var path = Utils.newFile(pathWrite.path, user.home);
+        if (!Guard.allowDIR(path, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the path: " + path);
+          return;
+        }
+        pathWrite.base64 = pathWrite.base64 != null ? pathWrite.base64 : false;
+        resp.getWriter().print(OrdersDIRs.fileAppend(path, pathWrite.base64,
+            pathWrite.data));
       }
     }), "/file/append");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var twoPath = TwoPath.fromString(body);
+        if (twoPath.origin == null || twoPath.origin.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a origin");
+          return;
+        }
+        if (twoPath.destiny == null || twoPath.destiny.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a destiny");
+          return;
+        }
+        var origin = Utils.newFile(twoPath.origin, user.home);
+        var destiny = Utils.newFile(twoPath.destiny, user.home);
+        if (!Guard.allowDIR(origin, user, false)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to the origin: " + origin);
+          return;
+        }
+        if (!Guard.allowDIR(destiny, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the destiny: " + destiny);
+          return;
+        }
+        if (!origin.exists()) {
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin: "
+              + origin);
+          return;
+        }
+        if (!origin.isFile()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "It is not a file the origin: " + origin);
+          return;
+        }
+        resp.getWriter().print(OrdersDIRs.fileCopy(origin, destiny));
       }
     }), "/file/copy");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var twoPath = TwoPath.fromString(body);
+        if (twoPath.origin == null || twoPath.origin.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a origin");
+          return;
+        }
+        if (twoPath.destiny == null || twoPath.destiny.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a destiny");
+          return;
+        }
+        var origin = Utils.newFile(twoPath.origin, user.home);
+        var destiny = Utils.newFile(twoPath.destiny, user.home);
+        if (!Guard.allowDIR(origin, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the origin: " + origin);
+          return;
+        }
+        if (!Guard.allowDIR(destiny, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the destiny: " + destiny);
+          return;
+        }
+        if (!origin.exists()) {
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin: "
+              + origin);
+          return;
+        }
+        if (!origin.isFile()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "It is not a file the origin: " + origin);
+          return;
+        }
+        resp.getWriter().print(OrdersDIRs.fileMove(origin, destiny));
       }
     }), "/file/move");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var user = Guard.getUser(onWay, req);
+        if (user == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var onePath = OnePath.fromString(body);
+        if (onePath.path == null || onePath.path.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
+          return;
+        }
+        var path = Utils.newFile(onePath.path, user.home);
+        if (!Guard.allowDIR(path, user, true)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to mutate the path: " + path);
+          return;
+        }
+        if (!path.exists()) {
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path: " + path);
+          return;
+        }
+        if (!path.isFile()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "It is not a file the path: "
+              + path);
+          return;
+        }
+        resp.getWriter().print(OrdersDIRs.fileDel(path));
       }
     }), "/file/del");
   }

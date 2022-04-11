@@ -21,9 +21,13 @@ public class User {
     if (this.pass == null) {
       this.pass = "";
     }
-    if (this.home == null || this.home.isEmpty()) {
-      this.home = Utils.fixPath(this.name, new File("dir").getAbsolutePath());
+    if (this.home == null) {
+      this.home = "";
     }
+    if (this.home.isEmpty()) {
+      this.home = "dir/" + this.name;
+    }
+    this.home = new File(this.home).getAbsolutePath();
     if (this.lang == null) {
       this.lang = "";
     }

@@ -37,13 +37,13 @@ public class ServesPUBs extends HttpServlet {
   protected void doHead(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     var reqFile = req.getPathInfo();
-    if (reqFile == null) {
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+    if (reqFile == null || reqFile.isEmpty()) {
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
       return;
     }
     var file = new File(basePath, URLDecoder.decode(reqFile, "UTF-8"));
     if (!file.exists()) {
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file: " + file);
       return;
     }
     OrdersPUBs.send(req, resp, file, false);
@@ -53,13 +53,13 @@ public class ServesPUBs extends HttpServlet {
   protected void doGet(HttpServletRequest req, HttpServletResponse resp)
       throws ServletException, IOException {
     var reqFile = req.getPathInfo();
-    if (reqFile == null) {
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+    if (reqFile == null || reqFile.isEmpty()) {
+      resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
       return;
     }
     var file = new File(basePath, URLDecoder.decode(reqFile, "UTF-8"));
     if (!file.exists()) {
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file: " + file);
       return;
     }
     OrdersPUBs.send(req, resp, file, true);

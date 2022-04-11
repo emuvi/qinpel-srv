@@ -1,5 +1,6 @@
 package br.net.pin.qinpel_srv.data;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import com.google.gson.Gson;
@@ -11,7 +12,6 @@ public class Setup {
   public String serverHost;
   public Integer serverPort;
   public String serverFolder;
-  public transient Pathed serverPathed;
   public Integer threadsMax;
   public Integer threadsMin;
   public Integer threadsIdleTimeout;
@@ -44,7 +44,7 @@ public class Setup {
     if (this.serverFolder == null) {
       this.serverFolder = "";
     }
-    this.serverPathed = new Pathed(this.serverFolder);
+    this.serverFolder = new File(this.serverFolder).getAbsolutePath();
     if (this.threadsMax == null) {
       this.threadsMax = 100;
     }

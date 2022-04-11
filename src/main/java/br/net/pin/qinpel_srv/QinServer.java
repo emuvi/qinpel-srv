@@ -138,6 +138,12 @@ public class QinServer {
   }
 
   public void start() throws Exception {
+    if (this.runny.setup.serverVerbose) {
+      System.out.println("Starting Server...");
+      System.out.println("Setup: " + this.runny.setup);
+      System.out.println("Users: " + this.runny.users);
+      System.out.println("Bases: " + this.runny.bases);
+    }
     this.server.start();
     this.server.join();
   }

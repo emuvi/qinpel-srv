@@ -9,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ServesCMDs {
-
   public static void init(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
@@ -27,5 +26,4 @@ public class ServesCMDs {
       }
     }), "/list/cmds");
   }
-
 }

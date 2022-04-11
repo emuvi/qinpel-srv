@@ -20,10 +20,16 @@ public class ServesAPPs {
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var reqURL = URLDecoder.decode(req.getPathInfo(), "UTF-8");
+        var reqURL = req.getPathInfo();
+        if (reqURL == null || reqURL.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
+          return;
+        }
+        reqURL = URLDecoder.decode(reqURL, "UTF-8");
         var reqFile = new File(onWay.setup.serverFolder, "app" + reqURL);
         if (!reqFile.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file: "
+              + reqFile);
           return;
         }
         if (reqURL.startsWith("/qinpel-app/")) {
@@ -32,7 +38,7 @@ public class ServesAPPs {
         }
         var user = Guard.getUser(onWay, req);
         if (user == null) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
         var appName = reqURL.substring(1);
@@ -41,7 +47,8 @@ public class ServesAPPs {
           appName = appName.substring(0, idxSlash);
         }
         if (!Guard.allowAPP(appName, user)) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to the application: " + appName);
           return;
         }
         OrdersAPPs.send(reqFile, resp);

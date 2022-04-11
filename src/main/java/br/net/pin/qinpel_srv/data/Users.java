@@ -16,10 +16,8 @@ public class Users extends ArrayList<User> {
       var root = new User();
       root.name = "root";
       root.pass = "r001";
-      root.home = "./dir/root";
-      root.lang = "";
       root.master = true;
-      root.access = new ArrayList<>();
+      root.fixDefaults();
       this.add(root);
     }
   }

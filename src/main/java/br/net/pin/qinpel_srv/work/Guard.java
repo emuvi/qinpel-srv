@@ -1,5 +1,6 @@
 package br.net.pin.qinpel_srv.work;
 
+import java.io.File;
 import java.util.Objects;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.User;
@@ -18,12 +19,13 @@ public class Guard {
     return false;
   }
 
-  public static boolean allowDIR(String path, User forUser, boolean toMutate) {
+  public static boolean allowDIR(File path, User forUser, boolean toMutate) {
     if (forUser.master) {
       return true;
     }
+    var absPath = path.getAbsolutePath();
     for (var access : forUser.access) {
-      if (access.dir != null && path.startsWith(access.dir.path)) {
+      if (access.dir != null && absPath.startsWith(access.dir.path)) {
         if (toMutate) {
           if (access.dir.mutable) {
             return true;

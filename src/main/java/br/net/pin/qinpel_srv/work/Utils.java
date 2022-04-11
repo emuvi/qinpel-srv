@@ -1,6 +1,8 @@
 package br.net.pin.qinpel_srv.work;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
 
 public class Utils {
   public static String listFolders(File onDir) {
@@ -14,28 +16,20 @@ public class Utils {
     return result.toString();
   }
 
-  public static boolean isAbsolute(String path) {
-    var sep = path.contains("\\") ? "\\" : "/";
-    if (path.startsWith(sep)) {
-      return true;
+  public static File newFile(String path, String parentIfRelative) {
+    var result = new File(path);
+    if (!result.isAbsolute()) {
+      result = new File(parentIfRelative, path);
     }
-    var firstSlash = path.indexOf(sep);
-    if (firstSlash > -1) {
-      var firstSegment = path.substring(0, firstSlash);
-      if (firstSegment.contains(":")) {
-        return true;
-      }
-    }
-    return false;
+    return result;
   }
 
-  public static String fixPath(String path, String parent) {
-    path = path.replace("\\", "/");
-    if (!isAbsolute(path)) {
-      parent = parent.replace("\\", "/");
-      return parent + (parent.endsWith("/") ? "" : "/") + path;
-    } else {
-      return path.replace("\\", "/"); // [ TODO ] - Use Pathed class
+  public static void close(Closeable resource) {
+    if (resource != null) {
+      try {
+        resource.close();
+      } catch (IOException ignore) {
+      }
     }
   }
 }

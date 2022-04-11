@@ -6,7 +6,6 @@ import br.net.pin.qinpel_srv.data.User;
 import jakarta.servlet.http.HttpServletRequest;
 
 public class Guard {
-
   public static boolean allowAPP(String name, User forUser) {
     if (forUser.master) {
       return true;
@@ -14,6 +13,24 @@ public class Guard {
     for (var access : forUser.access) {
       if (access.app != null && Objects.equals(access.app.name, name)) {
         return true;
+      }
+    }
+    return false;
+  }
+
+  public static boolean allowDIR(String path, User forUser, boolean toMutate) {
+    if (forUser.master) {
+      return true;
+    }
+    for (var access : forUser.access) {
+      if (access.dir != null && path.startsWith(access.dir.path)) {
+        if (toMutate) {
+          if (access.dir.mutable) {
+            return true;
+          }
+        } else {
+          return true;
+        }
       }
     }
     return false;
@@ -30,7 +47,7 @@ public class Guard {
     }
     return authed.user;
   }
-  
+
   public static String getQinpelToken(HttpServletRequest req) {
     var token = req.getHeader("Qinpel-Token");
     if (token == null) {
@@ -49,5 +66,4 @@ public class Guard {
     }
     return token;
   }
-
 }

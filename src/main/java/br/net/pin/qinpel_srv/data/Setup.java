@@ -6,7 +6,6 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 public class Setup {
-
   public Boolean serverVerbose;
   public Boolean serverArchive;
   public String serverName;
@@ -91,5 +90,4 @@ public class Setup {
   public static Setup fromString(String source) {
     return new Gson().fromJson(source, Setup.class);
   }
-
 }

@@ -3,7 +3,6 @@ package br.net.pin.qinpel_srv.data;
 import com.google.gson.Gson;
 
 public class Base {
-
   public String name;
   public String link;
 
@@ -24,5 +23,4 @@ public class Base {
   public static Base fromString(String json) {
     return new Gson().fromJson(json, Base.class);
   }
-
 }

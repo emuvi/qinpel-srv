@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class Runny {
-  
   public final Setup setup;
   public final Users users;
   public final Bases bases;
@@ -19,5 +18,4 @@ public class Runny {
     this.tokens = new ConcurrentHashMap<>();
     this.lastClean = new AtomicLong(System.currentTimeMillis());
   }
-
 }

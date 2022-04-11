@@ -1,26 +1,21 @@
 package br.net.pin.qinpel_srv.hook;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLDecoder;
-import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.work.Guard;
-import br.net.pin.qinpel_srv.work.Lists;
+import br.net.pin.qinpel_srv.work.OrdersAPPs;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ServesAPPs {
-
   public static void init(ServletContextHandler context) {
-
     context.addServlet(new ServletHolder(new HttpServlet() {
-
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
@@ -32,7 +27,7 @@ public class ServesAPPs {
           return;
         }
         if (reqURL.startsWith("/qinpel-app/")) {
-          sendAppSrc(reqFile, resp);
+          OrdersAPPs.send(reqFile, resp);
           return;
         }
         var user = Guard.getUser(onWay, req);
@@ -49,13 +44,11 @@ public class ServesAPPs {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
         }
-        sendAppSrc(reqFile, resp);
+        OrdersAPPs.send(reqFile, resp);
       }
-
     }), "/app/*");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
-
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
@@ -65,16 +58,8 @@ public class ServesAPPs {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
         }
-        resp.getWriter().print(Lists.listApps(onWay, user));
+        resp.getWriter().print(OrdersAPPs.listAPPs(onWay, user));
       }
-
     }), "/list/apps");
-
   }
-
-  private static void sendAppSrc(File file, HttpServletResponse resp) throws IOException {
-    resp.setContentLength((int) file.length());
-    IOUtils.copy(new FileInputStream(file), resp.getOutputStream());
-  }
-
 }

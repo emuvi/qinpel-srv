@@ -7,7 +7,6 @@ import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.TryAuth;
 
 public class Login {
-  
   public static Logged tryEnter(TryAuth tryAuth, Runny onWay) {
     for (var user : onWay.users) {
       if (user.name.equals(tryAuth.name) && user.pass.equals(tryAuth.pass)) {
@@ -27,5 +26,4 @@ public class Login {
     });
     return token.toString();
   }
-
 }

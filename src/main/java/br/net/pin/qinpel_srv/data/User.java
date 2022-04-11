@@ -5,7 +5,6 @@ import java.util.List;
 import com.google.gson.Gson;
 
 public class User {
-
   public String name;
   public String pass;
   public String home;
@@ -32,6 +31,9 @@ public class User {
     if (this.access == null) {
       this.access = new ArrayList<>();
     }
+    for (var access : this.access) {
+      access.fixDefaults();
+    }
   }
 
   @Override
@@ -42,5 +44,4 @@ public class User {
   public static User fromString(String json) {
     return new Gson().fromJson(json, User.class);
   }
-
 }

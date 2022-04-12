@@ -23,7 +23,7 @@ public class ServerAuth {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        onWay.clean();
+        onWay.tokens.clean();
         var body = IOUtils.toString(req.getReader());
         var tryAuth = TryAuth.fromString(body);
         var logged = Login.tryEnter(tryAuth, onWay);

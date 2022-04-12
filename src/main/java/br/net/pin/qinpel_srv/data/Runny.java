@@ -1,26 +1,22 @@
 package br.net.pin.qinpel_srv.data;
 
 import java.io.PrintWriter;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
+import org.apache.commons.io.FilenameUtils;
 
 public class Runny {
   public final Setup setup;
   public final Users users;
   public final Bases bases;
-
+  public final Tokens tokens;
   private final PrintWriter archive;
-  private final Map<String, Authed> tokens;
-  private final AtomicLong lastClean;
 
   public Runny(Setup setup, Users users, Bases bases) throws Exception {
     this.setup = setup;
     this.users = users;
     this.bases = bases;
-    this.archive = setup.serverArchive ? new PrintWriter(setup.serverFolder + "/" + setup.serverName + ".log") : null;
-    this.tokens = new ConcurrentHashMap<>();
-    this.lastClean = new AtomicLong(System.currentTimeMillis());
+    this.tokens = new Tokens(setup);
+    this.archive = setup.serverArchive ? new PrintWriter(setup.serverFolder + "/"
+        + setup.serverName + ".log") : null;
   }
 
   public void logInfo(String message) {
@@ -54,8 +50,8 @@ public class Runny {
       System.out.flush();
     }
     if (this.archive != null) {
-        this.archive.print(message);
-        this.archive.flush();
+      this.archive.print(message);
+      this.archive.flush();
     }
   }
 
@@ -65,32 +61,57 @@ public class Runny {
     result.append(kind);
     result.append("] ");
     result.append(message);
+    if (traceOf != null) {
+      if (traceOf instanceof Throwable error) {
+        result.append(this.getOrigin(error));
+      } else {
+        result.append(this.getOrigin());
+      }
+    }
     result.append("\n");
     return result.toString();
   }
 
-  public void putAuthed(String token, Authed authed) {
-    this.tokens.put(token, authed);
+  private String getOrigin() {
+    StringBuilder builder = new StringBuilder();
+    builder.append(" {");
+    StackTraceElement elements[] = Thread.currentThread().getStackTrace();
+    for (int i = elements.length - 1; i >= 0; i--) {
+      StackTraceElement element = elements[i];
+      if (element.getClassName().startsWith("br.net.pin.qinpel_srv") && !element
+          .getClassName().equals("br.net.pin.qinpel_srv.data.Runny")) {
+        builder.append(" |> ");
+        builder.append(FilenameUtils.getBaseName(element.getFileName()));
+        builder.append("[");
+        builder.append(element.getLineNumber());
+        builder.append("](");
+        builder.append(element.getMethodName());
+        builder.append(")");
+      }
+    }
+    builder.append("}");
+    return builder.toString();
   }
 
-  public User getAuthed(String token) {
-    var authed = this.tokens.get(token);
-    if (authed == null) {
-      return null;
+  private String getOrigin(Throwable ofError) {
+    StringBuilder builder = new StringBuilder();
+    builder.append(" {");
+    StackTraceElement elements[] = ofError.getStackTrace();
+    for (int i = elements.length - 1; i >= 0; i--) {
+      StackTraceElement element = elements[i];
+      if (element.getClassName().startsWith("br.net.pin.qinpel_srv") && !element
+          .getClassName().equals("br.net.pin.qinpel_srv.data.Runny")) {
+        builder.append(" |> ");
+        builder.append(FilenameUtils.getBaseName(element.getFileName()));
+        builder.append("[");
+        builder.append(element.getLineNumber());
+        builder.append("](");
+        builder.append(element.getMethodName());
+        builder.append(")");
+      }
     }
-    if (authed.expired(this.setup.tokenValidity)) {
-      this.tokens.remove(token);
-      return null;
-    }
-    return authed.user;
-  }
-
-  public void clean() {
-    long now = System.currentTimeMillis();
-    if (now - this.lastClean.get() > this.setup.cleanInterval) {
-      this.lastClean.set(now);
-      this.tokens.entrySet().removeIf(entry -> entry.getValue().expired(this.setup.tokenValidity));
-    }
+    builder.append("}");
+    return builder.toString();
   }
 }
 

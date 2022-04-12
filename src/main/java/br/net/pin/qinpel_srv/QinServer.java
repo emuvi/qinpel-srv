@@ -85,12 +85,12 @@ public class QinServer {
   }
 
   private void server_auth() {
-    System.out.println("Serving Auths...");
+    this.runny.logInfo("Serving Auths...");
     ServerAuth.init(this.context);
   }
 
   private void serves_pubs() throws Exception {
-    System.out.println("Serving PUBs...");
+    this.runny.logInfo("Serving PUBs...");
     var holder = new ServletHolder(new ServesPUBs());
     var pubDir = new File("pub");
     if (!pubDir.exists()) {
@@ -101,57 +101,55 @@ public class QinServer {
   }
 
   private void serves_apps() {
-    System.out.println("Serving APPs...");
+    this.runny.logInfo("Serving APPs...");
     ServesAPPs.init(this.context);
   }
 
   private void serves_dirs() {
-    System.out.println("Serving DIRs...");
+    this.runny.logInfo("Serving DIRs...");
     ServesDIRs.init(this.context);
   }
 
   private void serves_cmds() {
-    System.out.println("Serving CMDs...");
+    this.runny.logInfo("Serving CMDs...");
     ServesCMDs.init(this.context);
   }
 
   private void serves_dats() {
-    System.out.println("Serving DATs...");
+    this.runny.logInfo("Serving DATs...");
     ServesDATs.init(this.context);
   }
 
   private void serves_regs() {
-    System.out.println("Serving REGs...");
+    this.runny.logInfo("Serving REGs...");
     ServesREGs.init(this.context);
   }
 
   private void serves_sqls() {
-    System.out.println("Serving SQLs...");
+    this.runny.logInfo("Serving SQLs...");
     ServesSQLs.init(this.context);
   }
 
   private void serves_lizs() {
-    System.out.println("Serving LIZs...");
+    this.runny.logInfo("Serving LIZs...");
     ServesLIZs.init(this.context);
   }
 
   private void serves_gizs() {
-    System.out.println("Serving GIZs...");
+    this.runny.logInfo("Serving GIZs...");
     ServesLIZs.init(this.context);
   }
 
   private void server_utils() {
-    System.out.println("Serving Utils...");
+    this.runny.logInfo("Serving Utils...");
     ServerUtils.init(this.context, this.runny.setup);
   }
 
   public void start() throws Exception {
-    if (this.runny.setup.serverVerbose) {
-      System.out.println("Starting Server...");
-      System.out.println("Setup: " + this.runny.setup);
-      System.out.println("Users: " + this.runny.users);
-      System.out.println("Bases: " + this.runny.bases);
-    }
+    this.runny.logInfo("Starting Server...");
+    this.runny.logInfo("Setup: " + this.runny.setup);
+    this.runny.logInfo("Users: " + this.runny.users);
+    this.runny.logInfo("Bases: " + this.runny.bases);    
     this.server.start();
     this.server.join();
   }

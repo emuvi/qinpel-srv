@@ -32,7 +32,7 @@ public class ServesAPPs {
           return;
         }
         reqURL = URLDecoder.decode(reqURL, "UTF-8");
-        var reqFile = new File(onWay.setup.serverFolder, "app" + reqURL);
+        var reqFile = new File(onWay.air.setup.serverFolder, "app" + reqURL);
         if (!reqFile.exists()) {
           resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file at: "
               + reqFile);

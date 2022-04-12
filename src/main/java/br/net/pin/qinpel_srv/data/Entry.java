@@ -4,13 +4,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-public class Tokens {
-  private final Setup setup;
+public class Entry {
+  private final Air air;
   private final Map<String, Authed> tokens;
   private final AtomicLong lastClean;
 
-  public Tokens(Setup setup) {
-    this.setup = setup;
+  public Entry(Air air) {
+    this.air = air;
     this.tokens = new ConcurrentHashMap<>();
     this.lastClean = new AtomicLong(System.currentTimeMillis());
   }
@@ -24,7 +24,7 @@ public class Tokens {
     if (authed == null) {
       return null;
     }
-    if (authed.expired(this.setup.tokenValidity)) {
+    if (authed.expired(this.air.setup.tokenValidity)) {
       this.tokens.remove(token);
       return null;
     }
@@ -33,10 +33,10 @@ public class Tokens {
 
   public void clean() {
     long now = System.currentTimeMillis();
-    if (now - this.lastClean.get() > this.setup.cleanInterval) {
+    if (now - this.lastClean.get() > this.air.setup.cleanInterval) {
       this.lastClean.set(now);
       this.tokens.entrySet().removeIf(entry -> entry.getValue().expired(
-          this.setup.tokenValidity));
+          this.air.setup.tokenValidity));
     }
   }
 }

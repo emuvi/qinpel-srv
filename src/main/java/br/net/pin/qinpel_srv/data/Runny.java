@@ -4,24 +4,22 @@ import java.io.PrintWriter;
 import org.apache.commons.io.FilenameUtils;
 
 public class Runny {
-  public final Setup setup;
-  public final Users users;
-  public final Bases bases;
-  public final Tokens tokens;
+  public final Air air;
+  public final Entry entry;
+  public final Store store;
   private final PrintWriter archive;
 
-  public Runny(Setup setup, Users users, Bases bases) throws Exception {
-    this.setup = setup;
-    this.users = users;
-    this.bases = bases;
-    this.tokens = new Tokens(setup);
-    this.archive = setup.serverArchive ? new PrintWriter(setup.serverFolder + "/"
-        + setup.serverName + ".log") : null;
+  public Runny(Air air) throws Exception {
+    this.air = air;
+    this.entry = new Entry(air);
+    this.store = new Store(air);
+    this.archive = air.setup.serverArchive ? new PrintWriter(air.setup.serverFolder + "/"
+        + air.setup.serverName + ".log") : null;
   }
 
   public void logInfo(String message) {
     message = logMake("INFO", message, null);
-    if (this.setup.serverVerbose) {
+    if (this.air.setup.serverVerbose) {
       System.out.print(message);
       System.out.flush();
     }
@@ -33,7 +31,7 @@ public class Runny {
 
   public void logWarn(String message) {
     message = logMake("WARN", message, this);
-    if (this.setup.serverVerbose) {
+    if (this.air.setup.serverVerbose) {
       System.out.print(message);
       System.out.flush();
     }
@@ -45,7 +43,7 @@ public class Runny {
 
   public void logErro(Throwable error) {
     var message = logMake("ERRO", error.getMessage(), error);
-    if (this.setup.serverVerbose) {
+    if (this.air.setup.serverVerbose) {
       System.out.print(message);
       System.out.flush();
     }

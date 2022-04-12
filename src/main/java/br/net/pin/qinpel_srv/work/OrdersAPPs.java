@@ -22,13 +22,13 @@ public class OrdersAPPs {
   }
 
   public static String list(Runny onWay, User forUser) {
-    var appsDir = new File(onWay.setup.serverFolder, "app");
+    var appsDir = new File(onWay.air.setup.serverFolder, "app");
     if (forUser.master) {
       return Utils.listFolders(appsDir);
     }
     var result = new StringBuilder();
     for (var access : forUser.access) {
-      if (access.app != null && access.app.name != null && !access.app.name.isEmpty()) {
+      if (access.app != null) {
         if (new File(appsDir, access.app.name).exists()) {
           result.append(access.app.name);
           result.append("\n");

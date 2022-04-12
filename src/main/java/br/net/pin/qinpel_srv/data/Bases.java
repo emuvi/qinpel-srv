@@ -8,6 +8,7 @@ public class Bases extends ArrayList<Base> {
     for (var base : this) {
       base.fixDefaults();
     }
+    this.removeIf(entry -> entry.name.isEmpty());
   }
 
   @Override

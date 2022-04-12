@@ -15,12 +15,12 @@ import br.net.pin.qinpel_srv.hook.ServerAuth;
 import br.net.pin.qinpel_srv.hook.ServerUtils;
 import br.net.pin.qinpel_srv.hook.ServesAPPs;
 import br.net.pin.qinpel_srv.hook.ServesCMDs;
-import br.net.pin.qinpel_srv.hook.ServesDATs;
 import br.net.pin.qinpel_srv.hook.ServesDIRs;
 import br.net.pin.qinpel_srv.hook.ServesLIZs;
 import br.net.pin.qinpel_srv.hook.ServesPUBs;
 import br.net.pin.qinpel_srv.hook.ServesREGs;
 import br.net.pin.qinpel_srv.hook.ServesSQLs;
+import br.net.pin.qinpel_srv.hook.ServesSTRs;
 
 public class QinServer {
 
@@ -34,16 +34,16 @@ public class QinServer {
 
   public QinServer(Runny runny) throws Exception {
     this.runny = runny;
-    this.threadPool = new QueuedThreadPool(this.runny.setup.threadsMax,
-        this.runny.setup.threadsMin, this.runny.setup.threadsIdleTimeout);
+    this.threadPool = new QueuedThreadPool(this.runny.air.setup.threadsMax,
+        this.runny.air.setup.threadsMin, this.runny.air.setup.threadsIdleTimeout);
     this.server = new Server(this.threadPool);
     this.httpConfig = new HttpConfiguration();
     this.httpConfig.setSendDateHeader(false);
     this.httpConfig.setSendServerVersion(false);
     this.httpFactory = new HttpConnectionFactory(this.httpConfig);
     this.connector = new ServerConnector(this.server, httpFactory);
-    connector.setHost(this.runny.setup.serverHost);
-    connector.setPort(this.runny.setup.serverPort);
+    connector.setHost(this.runny.air.setup.serverHost);
+    connector.setPort(this.runny.air.setup.serverPort);
     this.server.setConnectors(new Connector[] {this.connector});
     this.context = new ServletContextHandler();
     this.context.setContextPath("");
@@ -54,31 +54,31 @@ public class QinServer {
 
   private void init_serves() throws Exception {
     this.server_auth();
-    if (this.runny.setup.servesPUBs) {
+    if (this.runny.air.setup.servesPUBs) {
       this.serves_pubs();
     }
-    if (this.runny.setup.servesAPPs) {
+    if (this.runny.air.setup.servesAPPs) {
       this.serves_apps();
     }
-    if (this.runny.setup.servesDIRs) {
+    if (this.runny.air.setup.servesDIRs) {
       this.serves_dirs();
     }
-    if (this.runny.setup.servesCMDs) {
+    if (this.runny.air.setup.servesCMDs) {
       this.serves_cmds();
     }
-    if (this.runny.setup.servesDATs) {
-      this.serves_dats();
+    if (this.runny.air.setup.servesSTRs) {
+      this.serves_strs();
     }
-    if (this.runny.setup.servesREGs) {
+    if (this.runny.air.setup.servesSTRs && this.runny.air.setup.servesREGs) {
       this.serves_regs();
     }
-    if (this.runny.setup.servesSQLs) {
+    if (this.runny.air.setup.servesSTRs && this.runny.air.setup.servesSQLs) {
       this.serves_sqls();
     }
-    if (this.runny.setup.servesLIZs) {
+    if (this.runny.air.setup.servesLIZs) {
       this.serves_lizs();
     }
-    if (this.runny.setup.servesGIZs) {
+    if (this.runny.air.setup.servesGIZs) {
       this.serves_gizs();
     }
     this.server_utils();
@@ -115,9 +115,9 @@ public class QinServer {
     ServesCMDs.init(this.context);
   }
 
-  private void serves_dats() {
-    this.runny.logInfo("Serving DATs...");
-    ServesDATs.init(this.context);
+  private void serves_strs() {
+    this.runny.logInfo("Serving STRs...");
+    ServesSTRs.init(this.context);
   }
 
   private void serves_regs() {
@@ -142,14 +142,14 @@ public class QinServer {
 
   private void server_utils() {
     this.runny.logInfo("Serving Utils...");
-    ServerUtils.init(this.context, this.runny.setup);
+    ServerUtils.init(this.context, this.runny.air.setup);
   }
 
   public void start() throws Exception {
     this.runny.logInfo("Starting Server...");
-    this.runny.logInfo("Setup: " + this.runny.setup);
-    this.runny.logInfo("Users: " + this.runny.users);
-    this.runny.logInfo("Bases: " + this.runny.bases);    
+    this.runny.logInfo("Setup On-Air: " + this.runny.air.setup);
+    this.runny.logInfo("Users On-Air: " + this.runny.air.users);
+    this.runny.logInfo("Bases On-Air: " + this.runny.air.bases);
     this.server.start();
     this.server.join();
   }

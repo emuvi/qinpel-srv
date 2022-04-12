@@ -20,6 +20,7 @@ public class Users extends ArrayList<User> {
       root.fixDefaults();
       this.add(root);
     }
+    this.removeIf(entry -> entry.name.isEmpty());
   }
 
   @Override

@@ -7,9 +7,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-import br.net.pin.qinpel_srv.data.Execute;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.User;
+import br.net.pin.qinpel_srv.swop.Execute;
 
 public class OrdersCMDs {
   public static String run(File executable, Execute execution) throws Exception {
@@ -84,13 +84,13 @@ public class OrdersCMDs {
   }
 
   public static String list(Runny onWay, User forUser) {
-    var cmdsDir = new File(onWay.setup.serverFolder, "cmd");
+    var cmdsDir = new File(onWay.air.setup.serverFolder, "cmd");
     if (forUser.master) {
       return Utils.listFolders(cmdsDir);
     }
     var result = new StringBuilder();
     for (var access : forUser.access) {
-      if (access.cmd != null && access.cmd.name != null && !access.cmd.name.isEmpty()) {
+      if (access.cmd != null) {
         if (new File(cmdsDir, access.cmd.name).exists()) {
           result.append(access.cmd.name);
           result.append("\n");

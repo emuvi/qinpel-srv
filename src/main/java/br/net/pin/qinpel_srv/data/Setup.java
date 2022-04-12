@@ -12,21 +12,26 @@ public class Setup {
   public String serverHost;
   public Integer serverPort;
   public String serverFolder;
-  public Integer threadsMax;
-  public Integer threadsMin;
-  public Integer threadsIdleTimeout;
-  public Long cleanInterval;
-  public Long tokenValidity;
   public Boolean servesPUBs;
   public Boolean servesAPPs;
   public Boolean servesDIRs;
   public Boolean servesCMDs;
-  public Boolean servesDATs;
+  public Boolean servesSTRs;
   public Boolean servesREGs;
   public Boolean servesSQLs;
   public Boolean servesLIZs;
   public Boolean servesGIZs;
+
   public Map<String, String> redirects;
+
+  public Integer threadsMin;
+  public Integer threadsMax;
+  public Integer threadsIdleTimeout;
+  public Long cleanInterval;
+  public Long tokenValidity;
+  public Integer storeMinIdle;
+  public Integer storeMaxIdle;
+  public Integer storeMaxTotal;
 
   public void fixDefaults() {
     if (this.serverVerbose == null) {
@@ -48,21 +53,7 @@ public class Setup {
       this.serverFolder = "";
     }
     this.serverFolder = new File(this.serverFolder).getAbsolutePath();
-    if (this.threadsMax == null) {
-      this.threadsMax = 100;
-    }
-    if (this.threadsMin == null) {
-      this.threadsMin = 10;
-    }
-    if (this.threadsIdleTimeout == null) {
-      this.threadsIdleTimeout = 120;
-    }
-    if (this.cleanInterval == null) {
-      this.cleanInterval = 12 * 60 * 60 * 1000L;
-    }
-    if (this.tokenValidity == null) {
-      this.tokenValidity = 24 * 60 * 60 * 1000L;
-    }
+    
     if (this.servesPUBs == null) {
       this.servesPUBs = false;
     }
@@ -75,8 +66,8 @@ public class Setup {
     if (this.servesCMDs == null) {
       this.servesCMDs = false;
     }
-    if (this.servesDATs == null) {
-      this.servesDATs = false;
+    if (this.servesSTRs == null) {
+      this.servesSTRs = false;
     }
     if (this.servesREGs == null) {
       this.servesREGs = false;
@@ -90,8 +81,34 @@ public class Setup {
     if (this.servesGIZs == null) {
       this.servesGIZs = false;
     }
+
     if (this.redirects == null) {
       this.redirects = new HashMap<>();
+    }
+
+    if (this.threadsMin == null) {
+      this.threadsMin = 10;
+    }
+    if (this.threadsMax == null) {
+      this.threadsMax = 100;
+    }
+    if (this.threadsIdleTimeout == null) {
+      this.threadsIdleTimeout = 120;
+    }
+    if (this.cleanInterval == null) {
+      this.cleanInterval = 12 * 60 * 60 * 1000L;
+    }
+    if (this.tokenValidity == null) {
+      this.tokenValidity = 24 * 60 * 60 * 1000L;
+    }
+    if (this.storeMinIdle == null) {
+      this.storeMinIdle = 10;
+    }
+    if (this.storeMaxIdle == null) {
+      this.storeMaxIdle = 30;
+    }
+    if (this.storeMaxTotal == null) {
+      this.storeMaxTotal = 100;
     }
   }
 

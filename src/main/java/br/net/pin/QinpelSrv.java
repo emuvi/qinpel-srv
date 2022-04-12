@@ -8,6 +8,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import br.net.pin.qinpel_srv.QinServer;
+import br.net.pin.qinpel_srv.data.Air;
 import br.net.pin.qinpel_srv.data.Bases;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.Setup;
@@ -50,7 +51,7 @@ public class QinpelSrv {
     setup.fixDefaults();
     users.fixDefaults();
     bases.fixDefaults();
-    new QinServer(new Runny(setup, users, bases)).start();
+    new QinServer(new Runny(new Air(setup, users, bases))).start();
   }
 
   public static Options cmdOptions() {
@@ -77,8 +78,8 @@ public class QinpelSrv {
         "Should we serve directories?").build());
     result.addOption(Option.builder("c").longOpt("cmds").desc("Should we serve commands?")
         .build());
-    result.addOption(Option.builder("t").longOpt("dats").desc(
-        "Should we serve databases access?").build());
+    result.addOption(Option.builder("t").longOpt("strs").desc(
+        "Should we serve databases storage?").build());
     result.addOption(Option.builder("r").longOpt("regs").desc(
         "Should we serve register actions?").build());
     result.addOption(Option.builder("s").longOpt("sqls").desc(
@@ -122,7 +123,7 @@ public class QinpelSrv {
       setup.servesCMDs = true;
     }
     if (command.hasOption('t')) {
-      setup.servesDATs = true;
+      setup.servesSTRs = true;
     }
     if (command.hasOption('r')) {
       setup.servesREGs = true;

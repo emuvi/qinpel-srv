@@ -11,7 +11,7 @@ public class User {
   public String home;
   public String lang;
   public Boolean master;
-  public List<Access> access;
+  public List<Allow> access;
 
   public void fixDefaults() {
     if (this.name == null) {

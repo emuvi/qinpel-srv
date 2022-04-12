@@ -4,11 +4,11 @@ import java.io.File;
 import java.util.List;
 import com.google.gson.Gson;
 
-public class Access {
+public class Allow {
   public APP app;
   public DIR dir;
   public CMD cmd;
-  public DAT dat;
+  public STR str;
   public REG reg;
   public SQL sql;
   public LIZ liz;
@@ -20,7 +20,7 @@ public class Access {
 
   public class DIR {
     public String path;
-    public Boolean mutable;
+    public Boolean mutate;
   }
 
   public class CMD {
@@ -28,16 +28,18 @@ public class Access {
     public List<String> args;
   }
 
-  public class DAT {
+  public class STR {
     public String name;
   }
 
   public class REG {
+    public String store;
     public String name;
-    public Boolean canWrite;
+    public Boolean mutate;
   }
 
   public class SQL {
+    public String store;
     public String path;
   }
 
@@ -60,7 +62,7 @@ public class Access {
         this.dir = null;
       } else {
         this.dir.path = new File(this.dir.path).getAbsolutePath();
-        this.dir.mutable = this.dir.mutable != null ? this.dir.mutable : false;
+        this.dir.mutate = this.dir.mutate != null ? this.dir.mutate : false;
       }
     }
     if (this.cmd != null) {
@@ -68,20 +70,22 @@ public class Access {
         this.cmd = null;
       }
     }
-    if (this.dat != null) {
-      if (this.dat.name == null || this.dat.name.isEmpty()) {
-        this.dat = null;
+    if (this.str != null) {
+      if (this.str.name == null || this.str.name.isEmpty()) {
+        this.str = null;
       }
     }
     if (this.reg != null) {
-      if (this.reg.name == null || this.reg.name.isEmpty()) {
+      if (this.reg.store == null || this.reg.store.isEmpty() || this.reg.name == null
+          || this.reg.name.isEmpty()) {
         this.reg = null;
       } else {
-        this.reg.canWrite = this.reg.canWrite != null ? this.reg.canWrite : false;
+        this.reg.mutate = this.reg.mutate != null ? this.reg.mutate : false;
       }
     }
     if (this.sql != null) {
-      if (this.sql.path == null || this.sql.path.isEmpty()) {
+      if (this.sql.store == null || this.sql.store.isEmpty() || this.sql.path == null
+          || this.sql.path.isEmpty()) {
         this.sql = null;
       } else {
         this.sql.path = new File(this.sql.path).getAbsolutePath();
@@ -108,7 +112,7 @@ public class Access {
     return new Gson().toJson(this);
   }
 
-  public static Access fromString(String json) {
-    return new Gson().fromJson(json, Access.class);
+  public static Allow fromString(String json) {
+    return new Gson().fromJson(json, Allow.class);
   }
 }

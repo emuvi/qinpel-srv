@@ -1,7 +1,6 @@
 package br.net.pin.qinpel_srv.work;
 
 import java.io.File;
-import java.util.Objects;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.User;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,7 +11,7 @@ public class Guard {
       return true;
     }
     for (var access : forUser.access) {
-      if (access.app != null && Objects.equals(access.app.name, name)) {
+      if (access.app != null && access.app.name.equals(name)) {
         return true;
       }
     }
@@ -23,11 +22,11 @@ public class Guard {
     if (forUser.master) {
       return true;
     }
-    var absPath = path.getAbsolutePath();
+    var fullPath = path.getAbsolutePath();
     for (var access : forUser.access) {
-      if (access.dir != null && absPath.startsWith(access.dir.path)) {
+      if (access.dir != null && fullPath.startsWith(access.dir.path)) {
         if (toMutate) {
-          if (access.dir.mutable) {
+          if (access.dir.mutate) {
             return true;
           }
         } else {
@@ -43,7 +42,7 @@ public class Guard {
     if (token.isEmpty()) {
       return null;
     }
-    return onWay.tokens.getAuthed(token);
+    return onWay.entry.getAuthed(token);
   }
 
   public static String getQinpelToken(HttpServletRequest req) {

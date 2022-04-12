@@ -5,7 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import br.net.pin.qinpel_srv.data.Runny;
-import br.net.pin.qinpel_srv.data.TryAuth;
+import br.net.pin.qinpel_srv.swop.TryAuth;
 import br.net.pin.qinpel_srv.work.Login;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -23,7 +23,7 @@ public class ServerAuth {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        onWay.tokens.clean();
+        onWay.entry.clean();
         var body = IOUtils.toString(req.getReader());
         var tryAuth = TryAuth.fromString(body);
         var logged = Login.tryEnter(tryAuth, onWay);

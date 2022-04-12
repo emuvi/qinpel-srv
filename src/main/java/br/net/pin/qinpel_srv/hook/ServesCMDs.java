@@ -5,8 +5,8 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import br.net.pin.qinpel_srv.data.Execute;
 import br.net.pin.qinpel_srv.data.Runny;
+import br.net.pin.qinpel_srv.swop.Execute;
 import br.net.pin.qinpel_srv.work.Guard;
 import br.net.pin.qinpel_srv.work.OrdersCMDs;
 import jakarta.servlet.ServletException;
@@ -43,7 +43,7 @@ public class ServesCMDs {
               "You don't have access to the command: " + execute.exec);
           return;
         }
-        var reqDir = new File(onWay.setup.serverFolder, "cmd/" + execute.exec);
+        var reqDir = new File(onWay.air.setup.serverFolder, "cmd/" + execute.exec);
         if (!reqDir.exists()) {
           resp.sendError(HttpServletResponse.SC_NOT_FOUND,
               "There is no command on folder: " + reqDir);

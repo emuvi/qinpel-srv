@@ -12,7 +12,7 @@ public class Login {
       if (user.name.equals(tryAuth.name) && user.pass.equals(tryAuth.pass)) {
         var token = newToken();
         var authed = new Authed(user, System.currentTimeMillis());
-        onWay.tokens.put(token, authed);
+        onWay.putAuthed(token, authed);
         return new Logged(user.lang, token);
       }
     }

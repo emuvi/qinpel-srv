@@ -15,6 +15,11 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class ServesAPPs {
   public static void init(ServletContextHandler context) {
+    initGet(context);
+    initList(context);
+  }
+
+  private static void initGet(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -22,7 +27,8 @@ public class ServesAPPs {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
         var reqURL = req.getPathInfo();
         if (reqURL == null || reqURL.isEmpty()) {
-          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path name");
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a path name");
           return;
         }
         reqURL = URLDecoder.decode(reqURL, "UTF-8");
@@ -54,7 +60,9 @@ public class ServesAPPs {
         OrdersAPPs.send(reqFile, resp);
       }
     }), "/app/*");
+  }
 
+  private static void initList(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)

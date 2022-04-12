@@ -15,6 +15,8 @@ public class Setup {
   public Integer threadsMax;
   public Integer threadsMin;
   public Integer threadsIdleTimeout;
+  public Long cleanInterval;
+  public Long tokenValidity;
   public Boolean servesPUBs;
   public Boolean servesAPPs;
   public Boolean servesDIRs;
@@ -23,6 +25,7 @@ public class Setup {
   public Boolean servesREGs;
   public Boolean servesSQLs;
   public Boolean servesLIZs;
+  public Boolean servesGIZs;
   public Map<String, String> redirects;
 
   public void fixDefaults() {
@@ -54,6 +57,12 @@ public class Setup {
     if (this.threadsIdleTimeout == null) {
       this.threadsIdleTimeout = 120;
     }
+    if (this.cleanInterval == null) {
+      this.cleanInterval = 12 * 60 * 60 * 1000L;
+    }
+    if (this.tokenValidity == null) {
+      this.tokenValidity = 24 * 60 * 60 * 1000L;
+    }
     if (this.servesPUBs == null) {
       this.servesPUBs = false;
     }
@@ -77,6 +86,9 @@ public class Setup {
     }
     if (this.servesLIZs == null) {
       this.servesLIZs = false;
+    }
+    if (this.servesGIZs == null) {
+      this.servesGIZs = false;
     }
     if (this.redirects == null) {
       this.redirects = new HashMap<>();

@@ -10,8 +10,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ServerUtils {
-
   public static void init(ServletContextHandler context, Setup setup) {
+    initPing(context);
+    initRedirects(context, setup);
+  }
+
+  private static void initPing(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -19,7 +23,9 @@ public class ServerUtils {
         resp.getWriter().print("pong");
       }
     }), "/ping");
+  }
 
+  private static void initRedirects(ServletContextHandler context, Setup setup) {
     for (var entry : setup.redirects.entrySet()) {
       context.addServlet(new ServletHolder(new HttpServlet() {
         @Override
@@ -30,5 +36,4 @@ public class ServerUtils {
       }), entry.getKey());
     }
   }
-  
 }

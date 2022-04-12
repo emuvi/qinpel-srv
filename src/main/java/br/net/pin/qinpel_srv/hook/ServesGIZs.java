@@ -8,7 +8,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ServesLIZs {
+public class ServesGIZs {
   public static void init(ServletContextHandler context) {
     initRun(context);
     initList(context);
@@ -21,7 +21,7 @@ public class ServesLIZs {
           throws ServletException, IOException {
         resp.getWriter().print(req.getRequestURI());
       }
-    }), "/liz/run");
+    }), "/giz/run");
   }
 
   private static void initList(ServletContextHandler context) {
@@ -31,6 +31,6 @@ public class ServesLIZs {
           throws ServletException, IOException {
         resp.getWriter().print(req.getRequestURI());
       }
-    }), "/list/lizs");
+    }), "/list/gizs");
   }
 }

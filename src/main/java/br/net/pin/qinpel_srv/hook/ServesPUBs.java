@@ -43,7 +43,7 @@ public class ServesPUBs extends HttpServlet {
     }
     var file = new File(basePath, URLDecoder.decode(reqFile, "UTF-8"));
     if (!file.exists()) {
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file: " + file);
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file at: " + file);
       return;
     }
     OrdersPUBs.send(req, resp, file, false);
@@ -59,7 +59,7 @@ public class ServesPUBs extends HttpServlet {
     }
     var file = new File(basePath, URLDecoder.decode(reqFile, "UTF-8"));
     if (!file.exists()) {
-      resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file: " + file);
+      resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file at: " + file);
       return;
     }
     OrdersPUBs.send(req, resp, file, true);

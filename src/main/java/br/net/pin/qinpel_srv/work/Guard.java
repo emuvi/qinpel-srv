@@ -43,11 +43,7 @@ public class Guard {
     if (token.isEmpty()) {
       return null;
     }
-    var authed = onWay.tokens.get(token);
-    if (authed == null) {
-      return null;
-    }
-    return authed.user;
+    return onWay.getAuthed(token);
   }
 
   public static String getQinpelToken(HttpServletRequest req) {

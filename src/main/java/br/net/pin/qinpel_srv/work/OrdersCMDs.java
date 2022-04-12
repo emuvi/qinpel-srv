@@ -7,12 +7,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
-import br.net.pin.qinpel_srv.data.ArgsInputs;
+import br.net.pin.qinpel_srv.data.Execute;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.User;
 
 public class OrdersCMDs {
-  public static String run(File executable, ArgsInputs argsInputs) throws Exception {
+  public static String run(File executable, Execute execution) throws Exception {
     var builder = new ProcessBuilder();
     var buffer = new ArrayList<String>();
     if (executable.getName().toLowerCase().endsWith(".jar")) {
@@ -22,23 +22,23 @@ public class OrdersCMDs {
     } else {
       buffer.add(executable.getAbsolutePath());
     }
-    if (argsInputs.args != null) {
-      buffer.addAll(argsInputs.args);
+    if (execution.args != null) {
+      buffer.addAll(execution.args);
     }
     builder.command(buffer);
     builder.redirectErrorStream(true);
     var process = builder.start();
     Thread inputsThread = null;
-    var inputsException = argsInputs.inputs != null ? new AtomicReference<Exception>(null)
+    var inputsException = execution.inputs != null ? new AtomicReference<Exception>(null)
         : null;
-    if (argsInputs.inputs != null) {
+    if (execution.inputs != null) {
       inputsThread = new Thread() {
         @Override
         public void run() {
           try {
             var writer = new BufferedWriter(new OutputStreamWriter(process
                 .getOutputStream()));
-            for (var input : argsInputs.inputs) {
+            for (var input : execution.inputs) {
               writer.write(input);
               writer.newLine();
               writer.flush();

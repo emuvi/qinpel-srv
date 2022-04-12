@@ -6,7 +6,6 @@ public class TwoPath {
   public String origin;
   public String destiny;
 
-
   @Override
   public String toString() {
     return new Gson().toJson(this);

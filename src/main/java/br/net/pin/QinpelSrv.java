@@ -85,6 +85,8 @@ public class QinpelSrv {
         "Should we serve SQL executions?").build());
     result.addOption(Option.builder("l").longOpt("lizs").desc(
         "Should we serve LIZ executions?").build());
+    result.addOption(Option.builder("g").longOpt("gizs").desc(
+        "Should we serve GIZ executions?").build());
     return result;
   }
 

@@ -18,8 +18,21 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ServesDIRs {
-
   public static void init(ServletContextHandler context) {
+    initDirList(context);
+    initDirNew(context);
+    initDirCopy(context);
+    initDirMove(context);
+    initDirDel(context);
+    initFileRead(context);
+    initFileWrite(context);
+    initFileAppend(context);
+    initFileCopy(context);
+    initFileMove(context);
+    initFileDel(context);
+  }
+
+  private static void initDirList(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -43,7 +56,8 @@ public class ServesDIRs {
           return;
         }
         if (!path.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path at: " + path);
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path at: "
+              + path);
           return;
         }
         if (!path.isDirectory()) {
@@ -54,7 +68,9 @@ public class ServesDIRs {
         resp.getWriter().print(OrdersDIRs.dirList(path));
       }
     }), "/dir/list");
+  }
 
+  private static void initDirNew(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -80,7 +96,9 @@ public class ServesDIRs {
         resp.getWriter().print(OrdersDIRs.dirNew(path));
       }
     }), "/dir/new");
+  }
 
+  private static void initDirCopy(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -127,7 +145,9 @@ public class ServesDIRs {
         resp.getWriter().print(OrdersDIRs.dirCopy(origin, destiny));
       }
     }), "/dir/copy");
+  }
 
+  private static void initDirMove(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -174,7 +194,9 @@ public class ServesDIRs {
         resp.getWriter().print(OrdersDIRs.dirMove(origin, destiny));
       }
     }), "/dir/move");
+  }
 
+  private static void initDirDel(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -198,7 +220,8 @@ public class ServesDIRs {
           return;
         }
         if (!path.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path at: " + path);
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path at: "
+              + path);
           return;
         }
         if (!path.isDirectory()) {
@@ -209,7 +232,9 @@ public class ServesDIRs {
         resp.getWriter().print(OrdersDIRs.dirDel(path));
       }
     }), "/dir/del");
+  }
 
+  private static void initFileRead(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -237,8 +262,9 @@ public class ServesDIRs {
             pathRead.rangeStart, pathRead.rangeLength));
       }
     }), "/file/read");
+  }
 
-
+  private static void initFileWrite(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -266,7 +292,9 @@ public class ServesDIRs {
             pathWrite.data, pathWrite.rangeStart));
       }
     }), "/file/write");
+  }
 
+  private static void initFileAppend(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -294,7 +322,9 @@ public class ServesDIRs {
             pathWrite.data));
       }
     }), "/file/append");
+  }
 
+  private static void initFileCopy(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -341,7 +371,9 @@ public class ServesDIRs {
         resp.getWriter().print(OrdersDIRs.fileCopy(origin, destiny));
       }
     }), "/file/copy");
+  }
 
+  private static void initFileMove(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -388,7 +420,9 @@ public class ServesDIRs {
         resp.getWriter().print(OrdersDIRs.fileMove(origin, destiny));
       }
     }), "/file/move");
+  }
 
+  private static void initFileDel(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
@@ -412,7 +446,8 @@ public class ServesDIRs {
           return;
         }
         if (!path.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path at: " + path);
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path at: "
+              + path);
           return;
         }
         if (!path.isFile()) {
@@ -424,5 +459,4 @@ public class ServesDIRs {
       }
     }), "/file/del");
   }
-
 }

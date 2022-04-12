@@ -13,19 +13,19 @@ public class ServesSQLs {
   public static void init(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         resp.getWriter().print(req.getRequestURI());
       }
-    }), "/sql/run/*");
+    }), "/sql/run");
 
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+      protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         resp.getWriter().print(req.getRequestURI());
       }
-    }), "/sql/ask/*");
+    }), "/sql/ask");
   }
 
 }

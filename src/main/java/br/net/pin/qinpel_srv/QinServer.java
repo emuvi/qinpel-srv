@@ -78,6 +78,9 @@ public class QinServer {
     if (this.runny.setup.servesLIZs) {
       this.serves_lizs();
     }
+    if (this.runny.setup.servesGIZs) {
+      this.serves_gizs();
+    }
     this.server_utils();
   }
 
@@ -129,6 +132,11 @@ public class QinServer {
 
   private void serves_lizs() {
     System.out.println("Serving LIZs...");
+    ServesLIZs.init(this.context);
+  }
+
+  private void serves_gizs() {
+    System.out.println("Serving GIZs...");
     ServesLIZs.init(this.context);
   }
 

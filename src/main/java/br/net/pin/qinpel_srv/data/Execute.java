@@ -3,7 +3,8 @@ package br.net.pin.qinpel_srv.data;
 import java.util.List;
 import com.google.gson.Gson;
 
-public class ArgsInputs {
+public class Execute {
+  public String exec;
   public List<String> args;
   public List<String> inputs;
 
@@ -12,7 +13,7 @@ public class ArgsInputs {
     return new Gson().toJson(this);
   }
 
-  public static ArgsInputs fromString(String json) {
-    return new Gson().fromJson(json, ArgsInputs.class);
+  public static Execute fromString(String json) {
+    return new Gson().fromJson(json, Execute.class);
   }
 }

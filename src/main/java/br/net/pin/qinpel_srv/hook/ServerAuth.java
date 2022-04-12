@@ -13,13 +13,17 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class ServerAuth {
-
   public static void init(ServletContextHandler context) {
+    initEnter(context);
+  }
+
+  private static void initEnter(ServletContextHandler context) {
     context.addServlet(new ServletHolder(new HttpServlet() {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        onWay.clean();
         var body = IOUtils.toString(req.getReader());
         var tryAuth = TryAuth.fromString(body);
         var logged = Login.tryEnter(tryAuth, onWay);
@@ -32,5 +36,4 @@ public class ServerAuth {
       }
     }), "/enter");
   }
-
 }

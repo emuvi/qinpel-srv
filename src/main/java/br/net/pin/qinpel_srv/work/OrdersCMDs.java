@@ -29,7 +29,8 @@ public class OrdersCMDs {
     builder.redirectErrorStream(true);
     var process = builder.start();
     Thread inputsThread = null;
-    var inputsException = new AtomicReference<Exception>(null);
+    var inputsException = argsInputs.inputs != null ? new AtomicReference<Exception>(null)
+        : null;
     if (argsInputs.inputs != null) {
       inputsThread = new Thread() {
         @Override
@@ -50,33 +51,26 @@ public class OrdersCMDs {
       inputsThread.start();
     }
     buffer.clear();
-    var outputsException = new AtomicReference<Exception>(null);
-    var outputsThread = new Thread() {
-      @Override
-      public void run() {
-        var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-        try {
-          String line;
-          while ((line = reader.readLine()) != null) {
-            buffer.add(line);
-          }
-        } catch (Exception e) {
-          outputsException.set(e);
-        }
+    Exception outputsException = null;
+    var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+    try {
+      String line;
+      while ((line = reader.readLine()) != null) {
+        buffer.add(line);
       }
-    };
-    outputsThread.start();
-    outputsThread.join();
+    } catch (Exception e) {
+      outputsException = e;
+    }
     if (inputsThread != null) {
       inputsThread.join();
     }
-    if (inputsException.get() != null) {
+    if (inputsException != null && inputsException.get() != null) {
       throw new Exception("Error on send the inputs to the command.", inputsException
           .get());
     }
-    if (outputsException.get() != null) {
+    if (outputsException != null) {
       throw new Exception("Error on getting the outputs from the command.",
-          outputsException.get());
+          outputsException);
     }
     var exitCode = process.waitFor();
     var result = new StringBuilder();

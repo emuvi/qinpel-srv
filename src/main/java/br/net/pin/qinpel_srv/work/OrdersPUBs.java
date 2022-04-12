@@ -1,6 +1,5 @@
 package br.net.pin.qinpel_srv.work;
 
-import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;

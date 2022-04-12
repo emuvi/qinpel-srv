@@ -21,7 +21,7 @@ public class OrdersAPPs {
     }
   }
 
-  public static String listAPPs(Runny onWay, User forUser) {
+  public static String list(Runny onWay, User forUser) {
     var appsDir = new File(onWay.setup.serverFolder, "app");
     if (forUser.master) {
       return Utils.listFolders(appsDir);

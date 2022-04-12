@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import com.google.gson.Gson;
-import br.net.pin.qinpel_srv.work.Utils;
 
 public class User {
   public String name;

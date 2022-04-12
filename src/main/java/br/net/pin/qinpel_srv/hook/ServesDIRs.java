@@ -43,7 +43,7 @@ public class ServesDIRs {
           return;
         }
         if (!path.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path: " + path);
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path at: " + path);
           return;
         }
         if (!path.isDirectory()) {
@@ -115,7 +115,7 @@ public class ServesDIRs {
           return;
         }
         if (!origin.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin: "
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin at: "
               + origin);
           return;
         }
@@ -162,7 +162,7 @@ public class ServesDIRs {
           return;
         }
         if (!origin.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin: "
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin at: "
               + origin);
           return;
         }
@@ -198,7 +198,7 @@ public class ServesDIRs {
           return;
         }
         if (!path.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path: " + path);
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path at: " + path);
           return;
         }
         if (!path.isDirectory()) {
@@ -329,7 +329,7 @@ public class ServesDIRs {
           return;
         }
         if (!origin.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin: "
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin at: "
               + origin);
           return;
         }
@@ -376,7 +376,7 @@ public class ServesDIRs {
           return;
         }
         if (!origin.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin: "
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no origin at: "
               + origin);
           return;
         }
@@ -412,7 +412,7 @@ public class ServesDIRs {
           return;
         }
         if (!path.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path: " + path);
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no path at: " + path);
           return;
         }
         if (!path.isFile()) {

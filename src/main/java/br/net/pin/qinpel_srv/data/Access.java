@@ -3,7 +3,6 @@ package br.net.pin.qinpel_srv.data;
 import java.io.File;
 import java.util.List;
 import com.google.gson.Gson;
-import br.net.pin.qinpel_srv.work.Utils;
 
 public class Access {
   public APP app;

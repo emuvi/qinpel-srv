@@ -22,13 +22,13 @@ public class ServesAPPs {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
         var reqURL = req.getPathInfo();
         if (reqURL == null || reqURL.isEmpty()) {
-          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path name");
           return;
         }
         reqURL = URLDecoder.decode(reqURL, "UTF-8");
         var reqFile = new File(onWay.setup.serverFolder, "app" + reqURL);
         if (!reqFile.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file: "
+          resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file at: "
               + reqFile);
           return;
         }
@@ -65,7 +65,7 @@ public class ServesAPPs {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
         }
-        resp.getWriter().print(OrdersAPPs.listAPPs(onWay, user));
+        resp.getWriter().print(OrdersAPPs.list(onWay, user));
       }
     }), "/list/apps");
   }

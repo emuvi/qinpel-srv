@@ -15,7 +15,7 @@ public class Users extends ArrayList<User> {
     if (!hasRoot) {
       var root = new User();
       root.name = "root";
-      root.pass = "r001";
+      root.pass = "14e32f44d229cdb580e90db646f87d78062b79d4";
       root.master = true;
       root.fixDefaults();
       this.add(root);

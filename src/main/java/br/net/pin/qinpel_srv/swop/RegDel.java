@@ -2,12 +2,12 @@ package br.net.pin.qinpel_srv.swop;
 
 import java.util.List;
 import com.google.gson.Gson;
-import br.net.pin.batx.data.Valued;
+import br.net.pin.batx.data.Clause;
 
-public class RegNew {
+public class RegDel {
   public String store;
   public String name;
-  public List<Valued> values;
+  public List<Clause> where;
 
   @Override
   public String toString() {

@@ -16,6 +16,7 @@ import br.net.pin.qinpel_srv.hook.ServerUtils;
 import br.net.pin.qinpel_srv.hook.ServesAPPs;
 import br.net.pin.qinpel_srv.hook.ServesCMDs;
 import br.net.pin.qinpel_srv.hook.ServesDIRs;
+import br.net.pin.qinpel_srv.hook.ServesGIZs;
 import br.net.pin.qinpel_srv.hook.ServesLIZs;
 import br.net.pin.qinpel_srv.hook.ServesPUBs;
 import br.net.pin.qinpel_srv.hook.ServesREGs;
@@ -137,7 +138,7 @@ public class QinServer {
 
   private void serves_gizs() {
     this.runny.logInfo("Serving GIZs...");
-    ServesLIZs.init(this.context);
+    ServesGIZs.init(this.context);
   }
 
   private void server_utils() {

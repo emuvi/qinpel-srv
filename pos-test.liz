@@ -20,6 +20,8 @@ local destiny_lib = Liz.path_join(tst_path, "lib")
 Liz.rm(destiny_lib)
 Liz.cp(origin_lib, destiny_lib)
 
+Liz.rm(pro_dest)
+
 local origin_start = "start.sh"
 if Liz.is_win() then
     origin_start = "start.bat"
@@ -28,4 +30,7 @@ local destiny_start = Liz.path_join(tst_path, origin_start)
 Liz.rm(destiny_start)
 Liz.cp(origin_start, destiny_start)
 
-Liz.rm(pro_dest)
+local origin_setup = "setup.json"
+local destiny_setup = Liz.path_join(tst_path, origin_setup)
+Liz.rm(destiny_setup)
+Liz.cp(origin_setup, destiny_setup)

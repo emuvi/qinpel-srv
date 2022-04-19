@@ -2,7 +2,7 @@ package br.net.pin.qinpel_srv.swop;
 
 import java.util.List;
 import com.google.gson.Gson;
-import br.net.pin.batx.data.Valued;
+import br.net.pin.jabx.data.Valued;
 
 public class RegNew {
   public String store;

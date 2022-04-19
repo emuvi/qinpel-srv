@@ -21,6 +21,7 @@ if Liz.has("pom.xml") then
         mvn = "mvn.cmd"
     end
     Liz.cmd(mvn, {"clean", "install"})
+    Liz.cmd(mvn, {"source:jar", "install"})
     print("Done maven")
 end
 

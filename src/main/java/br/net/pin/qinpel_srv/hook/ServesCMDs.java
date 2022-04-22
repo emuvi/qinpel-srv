@@ -63,6 +63,7 @@ public class ServesCMDs {
         }
         try {
           resp.getWriter().print(OrdersCMDs.run(executable, execute));
+          resp.setContentType("text/plain");
         } catch (Exception e) {
           throw new ServletException(e);
         }
@@ -81,6 +82,7 @@ public class ServesCMDs {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
         }
+        resp.setContentType("text/plain");
         resp.getWriter().print(OrdersCMDs.list(onWay, user));
       }
     }), "/list/cmds");

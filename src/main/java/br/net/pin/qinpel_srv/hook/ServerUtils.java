@@ -20,6 +20,7 @@ public class ServerUtils {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
+        resp.setContentType("text/plain");
         resp.getWriter().print("pong");
       }
     }), "/ping");

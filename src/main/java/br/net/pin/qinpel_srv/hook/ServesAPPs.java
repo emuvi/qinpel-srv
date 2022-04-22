@@ -73,6 +73,7 @@ public class ServesAPPs {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
         }
+        resp.setContentType("text/plain");
         resp.getWriter().print(OrdersAPPs.list(onWay, user));
       }
     }), "/list/apps");

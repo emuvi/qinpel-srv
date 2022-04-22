@@ -32,6 +32,7 @@ public class ServerAuth {
               "The user and/or pass is incorrect.");
           return;
         }
+        resp.setContentType("application/json");
         resp.getWriter().print(logged.toString());
       }
     }), "/enter");

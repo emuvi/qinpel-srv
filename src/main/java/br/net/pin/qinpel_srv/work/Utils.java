@@ -3,6 +3,7 @@ package br.net.pin.qinpel_srv.work;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import br.net.pin.jabx.mage.WizArray;
 
 public class Utils {
   public static String listFolders(File onDir) {
@@ -31,5 +32,40 @@ public class Utils {
       } catch (IOException ignore) {
       }
     }
+  }
+
+  private final static String[] TEXT_EXTENSIONS = new String[] {"txt", "htm", "html",
+      "css", "log"};
+  private final static String[] IMAGE_EXTENSIONS = new String[] {"jpg", "jpeg", "gif",
+      "png", "ico", "bmp", "svg"};
+  private final static String[] AUDIO_EXTENSIONS = new String[] {"mp3", "ogg", "wav",
+      "midi", "mid"};
+  private final static String[] VIDEO_EXTENSIONS = new String[] {"mp4", "ogv", "avi",
+      "mpg", "webm", "flv", "mov"};
+
+  public static String getMimeType(String fileName) {
+    var dot = fileName.lastIndexOf(".");
+    if (dot == -1) {
+      return "application/octet-stream";
+    }
+    var extension = fileName.substring(dot + 1);
+    if (extension.equals("js")) {
+      return "text/javascript";
+    }
+    if (WizArray.has(extension, Utils.TEXT_EXTENSIONS)) {
+      return "text/" + extension;
+    }
+    if (WizArray.has(extension, Utils.IMAGE_EXTENSIONS)) {
+      return "image/" + extension;
+    }
+
+    if (WizArray.has(extension, Utils.AUDIO_EXTENSIONS)) {
+      return "audio/" + extension;
+    }
+
+    if (WizArray.has(extension, Utils.VIDEO_EXTENSIONS)) {
+      return "video/" + extension;
+    }
+    return "application/" + extension;
   }
 }

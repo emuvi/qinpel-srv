@@ -3,12 +3,15 @@ package br.net.pin.qinpel_srv.data;
 import java.util.ArrayList;
 import com.google.gson.Gson;
 
-public class Bases extends ArrayList<Base> {
-  public void fixDefaults() {
-    for (var base : this) {
-      base.fixDefaults();
+import br.net.pin.jabx.data.DataWays;
+import br.net.pin.jabx.mage.WizChars;
+
+public class Bases extends ArrayList<DataWays> {
+  public void fixDefaults() throws Exception {
+    for (var way : this) {
+      way.fixNullsAndEnvs();
     }
-    this.removeIf(entry -> entry.name.isEmpty());
+    this.removeIf(entry -> WizChars.isEmpty(entry.getName()));
   }
 
   @Override

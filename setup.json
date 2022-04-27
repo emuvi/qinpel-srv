@@ -8,6 +8,7 @@
   "servesDIRs": true,
   "servesCMDs": true,
   "servesDATs": true,
+  "servesSTRs": true,
   "servesREGs": true,
   "servesSQLs": true,
   "servesLIZs": true

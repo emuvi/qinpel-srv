@@ -8,12 +8,12 @@ public class OrdersSTRs {
     var result = new StringBuilder();
     for (var base : onWay.air.bases) {
       if (forUser.master) {
-        result.append(base.name);
+        result.append(base.getName());
         result.append("\n");
       } else {
         for (var access : forUser.access) {
-          if (access.str != null && access.str.name.equals(base.name)) {
-            result.append(base.name);
+          if (access.str != null && access.str.name.equals(base.getName())) {
+            result.append(base.getName());
             result.append("\n");
             break;
           }

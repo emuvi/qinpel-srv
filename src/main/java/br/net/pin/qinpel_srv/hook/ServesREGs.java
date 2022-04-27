@@ -21,9 +21,10 @@ public class ServesREGs {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var base = req.getPathInfo().substring(1);
+        resp.getWriter().print("Base: " + base);
       }
-    }), "/reg/new");
+    }), "/reg/new/*");
   }
 
   private static void initRegAsk(ServletContextHandler context) {
@@ -31,9 +32,10 @@ public class ServesREGs {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var base = req.getPathInfo().substring(1);
+        resp.getWriter().print("Base: " + base);
       }
-    }), "/reg/ask");
+    }), "/reg/ask/*");
   }
 
   private static void initRegSet(ServletContextHandler context) {
@@ -41,9 +43,10 @@ public class ServesREGs {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var base = req.getPathInfo().substring(1);
+        resp.getWriter().print("Base: " + base);
       }
-    }), "/reg/set");
+    }), "/reg/set/*");
   }
 
   private static void initRegDel(ServletContextHandler context) {
@@ -51,8 +54,9 @@ public class ServesREGs {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        resp.getWriter().print(req.getRequestURI());
+        var base = req.getPathInfo().substring(1);
+        resp.getWriter().print("Base: " + base);
       }
-    }), "/reg/del");
+    }), "/reg/del/*");
   }
 }

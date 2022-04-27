@@ -5,41 +5,69 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.dbcp2.BasicDataSource;
 
+import br.net.pin.jabx.data.Helped;
+import br.net.pin.jabx.data.Helper;
+import br.net.pin.jabx.mage.WizChars;
+
 public class Store {
   private final Air air;
-  private final Map<String, BasicDataSource> links;
+  private final Map<String, Stored> stores;
 
   public Store(Air air) throws Exception {
     this.air = air;
     if (this.air.setup.servesSTRs) {
-      this.links = new ConcurrentHashMap<>();
+      this.stores = new ConcurrentHashMap<>();
       for (var base : this.air.bases) {
-        var bds = new BasicDataSource();
-        bds.setUrl(base.jdbc);        
-        if (!base.user.isEmpty()) {
-          bds.setUsername(base.user);
+        var helper = base.getHelper();
+        var source = new BasicDataSource();
+        source.setUrl(base.getUrl());
+        var user = base.getUser();
+        if (!WizChars.isEmpty(user)) {
+          source.setUsername(user);
         }
-        if (!base.pass.isEmpty()) {
-          bds.setPassword(base.pass);
+        var pass = base.getPass();
+        if (!WizChars.isEmpty(pass)) {
+          source.setPassword(pass);
         }
-        bds.setMinIdle(this.air.setup.storeMinIdle);
-        bds.setMaxIdle(this.air.setup.storeMaxIdle);
-        bds.setMaxTotal(this.air.setup.storeMaxTotal);
-        this.links.put(base.name, bds);
+        source.setMinIdle(this.air.setup.storeMinIdle);
+        source.setMaxIdle(this.air.setup.storeMaxIdle);
+        source.setMaxTotal(this.air.setup.storeMaxTotal);
+        this.stores.put(base.getName(), new Stored(helper, source));
       }
     } else {
-      this.links = null;
+      this.stores = null;
     }
   }
 
-  public Connection getLink(String base) throws Exception {
-    if (this.links == null) {
-      return null;
+  public Connection getLink(String ofBase) throws Exception {
+    if (this.stores == null) {
+      throw new Exception("No stores are served.");
     }
-    var bds = this.links.get(base);
-    if (bds == null) {
-      return null;
+    var stored = this.stores.get(ofBase);
+    if (stored == null) {
+      throw new Exception("Base " + ofBase + " not found");
     }
-    return bds.getConnection();
+    return stored.source.getConnection();
+  }
+
+  public Helped getHelp(String onBase) throws Exception {
+    if (this.stores == null) {
+      throw new Exception("No stores are served.");
+    }
+    var stored = this.stores.get(onBase);
+    if (stored == null) {
+      throw new Exception("Base " + onBase + " not found");
+    }
+    return new Helped(stored.helper, stored.source.getConnection());
+  }
+
+  private static class Stored {
+    public final Helper helper;
+    public final BasicDataSource source;
+
+    public Stored(Helper helper, BasicDataSource source) {
+      this.helper = helper;
+      this.source = source;
+    }
   }
 }

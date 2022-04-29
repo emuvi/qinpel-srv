@@ -15,15 +15,15 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.hook.ServerAuth;
 import br.net.pin.qinpel_srv.hook.ServerUtils;
-import br.net.pin.qinpel_srv.hook.ServesAPPs;
-import br.net.pin.qinpel_srv.hook.ServesCMDs;
-import br.net.pin.qinpel_srv.hook.ServesDIRs;
-import br.net.pin.qinpel_srv.hook.ServesGIZs;
-import br.net.pin.qinpel_srv.hook.ServesLIZs;
-import br.net.pin.qinpel_srv.hook.ServesPUBs;
-import br.net.pin.qinpel_srv.hook.ServesREGs;
-import br.net.pin.qinpel_srv.hook.ServesSQLs;
-import br.net.pin.qinpel_srv.hook.ServesSTRs;
+import br.net.pin.qinpel_srv.hook.ServesAPP;
+import br.net.pin.qinpel_srv.hook.ServesBAS;
+import br.net.pin.qinpel_srv.hook.ServesCMD;
+import br.net.pin.qinpel_srv.hook.ServesDIR;
+import br.net.pin.qinpel_srv.hook.ServesGIZ;
+import br.net.pin.qinpel_srv.hook.ServesLIZ;
+import br.net.pin.qinpel_srv.hook.ServesPUB;
+import br.net.pin.qinpel_srv.hook.ServesREG;
+import br.net.pin.qinpel_srv.hook.ServesSQL;
 
 public class QinServer {
 
@@ -57,31 +57,31 @@ public class QinServer {
 
   private void init_serves() throws Exception {
     this.server_auth();
-    if (this.runny.air.setup.servesPUBs) {
+    if (this.runny.air.setup.servesPUB) {
       this.serves_pubs();
     }
-    if (this.runny.air.setup.servesAPPs) {
+    if (this.runny.air.setup.servesAPP) {
       this.serves_apps();
     }
-    if (this.runny.air.setup.servesDIRs) {
+    if (this.runny.air.setup.servesDIR) {
       this.serves_dirs();
     }
-    if (this.runny.air.setup.servesCMDs) {
+    if (this.runny.air.setup.servesCMD) {
       this.serves_cmds();
     }
-    if (this.runny.air.setup.servesSTRs) {
+    if (this.runny.air.setup.servesBAS) {
       this.serves_strs();
     }
-    if (this.runny.air.setup.servesSTRs && this.runny.air.setup.servesREGs) {
+    if (this.runny.air.setup.servesBAS && this.runny.air.setup.servesREG) {
       this.serves_regs();
     }
-    if (this.runny.air.setup.servesSTRs && this.runny.air.setup.servesSQLs) {
+    if (this.runny.air.setup.servesBAS && this.runny.air.setup.servesSQL) {
       this.serves_sqls();
     }
-    if (this.runny.air.setup.servesLIZs) {
+    if (this.runny.air.setup.servesLIZ) {
       this.serves_lizs();
     }
-    if (this.runny.air.setup.servesGIZs) {
+    if (this.runny.air.setup.servesGIZ) {
       this.serves_gizs();
     }
     this.server_utils();
@@ -94,7 +94,7 @@ public class QinServer {
 
   private void serves_pubs() throws Exception {
     this.runny.logInfo("Serving PUBs...");
-    var holder = new ServletHolder(new ServesPUBs());
+    var holder = new ServletHolder(new ServesPUB());
     var pubDir = new File("pub");
     if (!pubDir.exists()) {
       Files.createDirectories(pubDir.toPath());
@@ -105,42 +105,42 @@ public class QinServer {
 
   private void serves_apps() {
     this.runny.logInfo("Serving APPs...");
-    ServesAPPs.init(this.context);
+    ServesAPP.init(this.context);
   }
 
   private void serves_dirs() {
     this.runny.logInfo("Serving DIRs...");
-    ServesDIRs.init(this.context);
+    ServesDIR.init(this.context);
   }
 
   private void serves_cmds() {
     this.runny.logInfo("Serving CMDs...");
-    ServesCMDs.init(this.context);
+    ServesCMD.init(this.context);
   }
 
   private void serves_strs() {
     this.runny.logInfo("Serving STRs...");
-    ServesSTRs.init(this.context);
+    ServesBAS.init(this.context);
   }
 
   private void serves_regs() {
     this.runny.logInfo("Serving REGs...");
-    ServesREGs.init(this.context);
+    ServesREG.init(this.context);
   }
 
   private void serves_sqls() {
     this.runny.logInfo("Serving SQLs...");
-    ServesSQLs.init(this.context);
+    ServesSQL.init(this.context);
   }
 
   private void serves_lizs() {
     this.runny.logInfo("Serving LIZs...");
-    ServesLIZs.init(this.context);
+    ServesLIZ.init(this.context);
   }
 
   private void serves_gizs() {
     this.runny.logInfo("Serving GIZs...");
-    ServesGIZs.init(this.context);
+    ServesGIZ.init(this.context);
   }
 
   private void server_utils() {

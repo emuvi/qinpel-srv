@@ -1,9 +1,13 @@
 package br.net.pin.qinpel_srv.hook;
 
 import java.io.IOException;
+
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
+import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.Setup;
+import br.net.pin.qinpel_srv.work.Guard;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ServerUtils {
   public static void init(ServletContextHandler context, Setup setup) {
     initPing(context);
+    initLogged(context);
     initRedirects(context, setup);
   }
 
@@ -24,6 +29,22 @@ public class ServerUtils {
         resp.getWriter().print("pong");
       }
     }), "/ping");
+  }
+
+  private static void initLogged(ServletContextHandler context) {
+    context.addServlet(new ServletHolder(new HttpServlet() {
+      @Override
+      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+          throws ServletException, IOException {
+        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed != null) {
+          resp.getWriter().print(authed.user.name);
+        } else {
+          resp.getWriter().print("<!-- No user is logged. -->");
+        }
+      }
+    }), "/logged");
   }
 
   private static void initRedirects(ServletContextHandler context, Setup setup) {

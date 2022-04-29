@@ -12,14 +12,14 @@ import br.net.pin.qinpel_srv.swap.PathRead;
 import br.net.pin.qinpel_srv.swap.PathWrite;
 import br.net.pin.qinpel_srv.swap.TwoPath;
 import br.net.pin.qinpel_srv.work.Guard;
-import br.net.pin.qinpel_srv.work.OrdersDIRs;
+import br.net.pin.qinpel_srv.work.OrdersDIR;
 import br.net.pin.qinpel_srv.work.Utils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ServesDIRs {
+public class ServesDIR {
   public static void init(ServletContextHandler context) {
     initDirList(context);
     initDirNew(context);
@@ -40,8 +40,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -51,8 +51,8 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(onePath.path, user.home);
-        if (!Guard.allowDIR(path, user, false)) {
+        var path = Utils.newFile(onePath.path, authed.getHome());
+        if (!Guard.allowDIR(path, authed, false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the path: " + path);
           return;
@@ -68,7 +68,7 @@ public class ServesDIRs {
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.dirList(path));
+        resp.getWriter().print(OrdersDIR.dirList(path));
       }
     }), "/dir/list");
   }
@@ -79,8 +79,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -90,14 +90,14 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(onePath.path, user.home);
-        if (!Guard.allowDIR(path, user, true)) {
+        var path = Utils.newFile(onePath.path, authed.getHome());
+        if (!Guard.allowDIR(path, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.dirNew(path));
+        resp.getWriter().print(OrdersDIR.dirNew(path));
       }
     }), "/dir/new");
   }
@@ -108,8 +108,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -124,14 +124,14 @@ public class ServesDIRs {
               "You must provide a destiny");
           return;
         }
-        var origin = Utils.newFile(twoPath.origin, user.home);
-        var destiny = Utils.newFile(twoPath.destiny, user.home);
-        if (!Guard.allowDIR(origin, user, false)) {
+        var origin = Utils.newFile(twoPath.origin, authed.getHome());
+        var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
+        if (!Guard.allowDIR(origin, authed, false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the origin: " + origin);
           return;
         }
-        if (!Guard.allowDIR(destiny, user, true)) {
+        if (!Guard.allowDIR(destiny, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the destiny: " + destiny);
           return;
@@ -147,7 +147,7 @@ public class ServesDIRs {
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.dirCopy(origin, destiny));
+        resp.getWriter().print(OrdersDIR.dirCopy(origin, destiny));
       }
     }), "/dir/copy");
   }
@@ -158,8 +158,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -174,14 +174,14 @@ public class ServesDIRs {
               "You must provide a destiny");
           return;
         }
-        var origin = Utils.newFile(twoPath.origin, user.home);
-        var destiny = Utils.newFile(twoPath.destiny, user.home);
-        if (!Guard.allowDIR(origin, user, true)) {
+        var origin = Utils.newFile(twoPath.origin, authed.getHome());
+        var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
+        if (!Guard.allowDIR(origin, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the origin: " + origin);
           return;
         }
-        if (!Guard.allowDIR(destiny, user, true)) {
+        if (!Guard.allowDIR(destiny, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the destiny: " + destiny);
           return;
@@ -197,7 +197,7 @@ public class ServesDIRs {
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.dirMove(origin, destiny));
+        resp.getWriter().print(OrdersDIR.dirMove(origin, destiny));
       }
     }), "/dir/move");
   }
@@ -208,8 +208,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -219,8 +219,8 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(onePath.path, user.home);
-        if (!Guard.allowDIR(path, user, true)) {
+        var path = Utils.newFile(onePath.path, authed.getHome());
+        if (!Guard.allowDIR(path, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;
@@ -236,7 +236,7 @@ public class ServesDIRs {
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.dirDel(path));
+        resp.getWriter().print(OrdersDIR.dirDel(path));
       }
     }), "/dir/del");
   }
@@ -247,8 +247,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -258,15 +258,15 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(pathRead.path, user.home);
-        if (!Guard.allowDIR(path, user, false)) {
+        var path = Utils.newFile(pathRead.path, authed.getHome());
+        if (!Guard.allowDIR(path, authed, false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the path: " + path);
           return;
         }
         pathRead.base64 = pathRead.base64 != null ? pathRead.base64 : false;
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.fileRead(path, pathRead.base64,
+        resp.getWriter().print(OrdersDIR.fileRead(path, pathRead.base64,
             pathRead.rangeStart, pathRead.rangeLength));
       }
     }), "/file/read");
@@ -278,8 +278,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -289,15 +289,15 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(pathWrite.path, user.home);
-        if (!Guard.allowDIR(path, user, true)) {
+        var path = Utils.newFile(pathWrite.path, authed.getHome());
+        if (!Guard.allowDIR(path, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;
         }
         pathWrite.base64 = pathWrite.base64 != null ? pathWrite.base64 : false;
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.fileWrite(path, pathWrite.base64,
+        resp.getWriter().print(OrdersDIR.fileWrite(path, pathWrite.base64,
             pathWrite.data, pathWrite.rangeStart));
       }
     }), "/file/write");
@@ -309,8 +309,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -320,15 +320,15 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(pathWrite.path, user.home);
-        if (!Guard.allowDIR(path, user, true)) {
+        var path = Utils.newFile(pathWrite.path, authed.getHome());
+        if (!Guard.allowDIR(path, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;
         }
         pathWrite.base64 = pathWrite.base64 != null ? pathWrite.base64 : false;
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.fileAppend(path, pathWrite.base64,
+        resp.getWriter().print(OrdersDIR.fileAppend(path, pathWrite.base64,
             pathWrite.data));
       }
     }), "/file/append");
@@ -340,8 +340,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -356,14 +356,14 @@ public class ServesDIRs {
               "You must provide a destiny");
           return;
         }
-        var origin = Utils.newFile(twoPath.origin, user.home);
-        var destiny = Utils.newFile(twoPath.destiny, user.home);
-        if (!Guard.allowDIR(origin, user, false)) {
+        var origin = Utils.newFile(twoPath.origin, authed.getHome());
+        var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
+        if (!Guard.allowDIR(origin, authed, false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the origin: " + origin);
           return;
         }
-        if (!Guard.allowDIR(destiny, user, true)) {
+        if (!Guard.allowDIR(destiny, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the destiny: " + destiny);
           return;
@@ -379,7 +379,7 @@ public class ServesDIRs {
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.fileCopy(origin, destiny));
+        resp.getWriter().print(OrdersDIR.fileCopy(origin, destiny));
       }
     }), "/file/copy");
   }
@@ -390,8 +390,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -406,14 +406,14 @@ public class ServesDIRs {
               "You must provide a destiny");
           return;
         }
-        var origin = Utils.newFile(twoPath.origin, user.home);
-        var destiny = Utils.newFile(twoPath.destiny, user.home);
-        if (!Guard.allowDIR(origin, user, true)) {
+        var origin = Utils.newFile(twoPath.origin, authed.getHome());
+        var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
+        if (!Guard.allowDIR(origin, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the origin: " + origin);
           return;
         }
-        if (!Guard.allowDIR(destiny, user, true)) {
+        if (!Guard.allowDIR(destiny, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the destiny: " + destiny);
           return;
@@ -429,7 +429,7 @@ public class ServesDIRs {
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.fileMove(origin, destiny));
+        resp.getWriter().print(OrdersDIR.fileMove(origin, destiny));
       }
     }), "/file/move");
   }
@@ -440,8 +440,8 @@ public class ServesDIRs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -451,8 +451,8 @@ public class ServesDIRs {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(onePath.path, user.home);
-        if (!Guard.allowDIR(path, user, true)) {
+        var path = Utils.newFile(onePath.path, authed.getHome());
+        if (!Guard.allowDIR(path, authed, true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;
@@ -468,7 +468,7 @@ public class ServesDIRs {
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersDIRs.fileDel(path));
+        resp.getWriter().print(OrdersDIR.fileDel(path));
       }
     }), "/file/del");
   }

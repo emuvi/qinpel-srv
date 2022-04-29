@@ -8,11 +8,11 @@ import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
+import br.net.pin.qinpel_srv.data.Authed;
 import br.net.pin.qinpel_srv.data.Runny;
-import br.net.pin.qinpel_srv.data.User;
 import br.net.pin.qinpel_srv.swap.Execute;
 
-public class OrdersCMDs {
+public class OrdersCMD {
   public static String run(File executable, Execute execution) throws Exception {
     var builder = new ProcessBuilder();
     var buffer = new ArrayList<String>();
@@ -84,17 +84,27 @@ public class OrdersCMDs {
     return result.toString();
   }
 
-  public static String list(Runny onWay, User forUser) {
+  public static String list(Runny onWay, Authed forAuthed) {
     var cmdsDir = new File(onWay.air.setup.serverFolder, "cmd");
-    if (forUser.master) {
+    if (forAuthed.isMaster()) {
       return Utils.listFolders(cmdsDir);
     }
     var result = new StringBuilder();
-    for (var access : forUser.access) {
+    for (var access : forAuthed.user.access) {
       if (access.cmd != null) {
         if (new File(cmdsDir, access.cmd.name).exists()) {
           result.append(access.cmd.name);
           result.append("\n");
+        }
+      }
+    }
+    if (forAuthed.group != null) {
+      for (var access : forAuthed.group.access) {
+        if (access.cmd != null) {
+          if (new File(cmdsDir, access.cmd.name).exists()) {
+            result.append(access.cmd.name);
+            result.append("\n");
+          }
         }
       }
     }

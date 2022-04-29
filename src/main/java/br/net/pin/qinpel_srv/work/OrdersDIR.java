@@ -7,11 +7,12 @@ import java.io.RandomAccessFile;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Base64;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 
-public class OrdersDIRs {
+public class OrdersDIR {
   public static String dirList(File path) {
     var result = new StringBuilder();
     result.append("P: ");

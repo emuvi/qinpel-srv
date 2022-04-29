@@ -3,12 +3,12 @@ package br.net.pin.qinpel_srv.swap;
 import com.google.gson.Gson;
 
 public class Logged {
-  public String lang;
   public String token;
+  public String lang;
 
-  public Logged(String lang, String token) {
-    this.lang = lang;
+  public Logged(String token, String lang) {
     this.token = token;
+    this.lang = lang;
   }
 
   @Override

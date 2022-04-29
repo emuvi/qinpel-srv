@@ -2,13 +2,13 @@ package br.net.pin.qinpel_srv.data;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Entry extends ConcurrentHashMap<String, User> {
-  public User getAuthed(String token) {
+public class Autheds extends ConcurrentHashMap<String, Authed> {
+  public Authed getAuthed(String token) {
     return this.get(token);
   }
 
-  public void putAuthed(String token, User user) {
-    this.put(token, user);
+  public void addAuthed(String token, Authed authed) {
+    this.put(token, authed);
   }
 
   public void delAuthed(String token) {

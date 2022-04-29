@@ -6,11 +6,11 @@ import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
 
+import br.net.pin.qinpel_srv.data.Authed;
 import br.net.pin.qinpel_srv.data.Runny;
-import br.net.pin.qinpel_srv.data.User;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class OrdersAPPs {
+public class OrdersAPP {
   public static void send(File file, HttpServletResponse resp) throws IOException {
     resp.setContentType(Utils.getMimeType(file.getName()));
     resp.setContentLength((int) file.length());
@@ -19,17 +19,27 @@ public class OrdersAPPs {
     }
   }
 
-  public static String list(Runny onWay, User forUser) {
+  public static String list(Runny onWay, Authed forAuthed) {
     var appsDir = new File(onWay.air.setup.serverFolder, "app");
-    if (forUser.master) {
+    if (forAuthed.isMaster()) {
       return Utils.listFolders(appsDir);
     }
     var result = new StringBuilder();
-    for (var access : forUser.access) {
+    for (var access : forAuthed.user.access) {
       if (access.app != null) {
         if (new File(appsDir, access.app.name).exists()) {
           result.append(access.app.name);
           result.append("\n");
+        }
+      }
+    }
+    if (forAuthed.group != null) {
+      for (var access : forAuthed.group.access) {
+        if (access.app != null) {
+          if (new File(appsDir, access.app.name).exists()) {
+            result.append(access.app.name);
+            result.append("\n");
+          }
         }
       }
     }

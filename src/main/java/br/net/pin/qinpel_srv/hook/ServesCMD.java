@@ -10,13 +10,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.swap.Execute;
 import br.net.pin.qinpel_srv.work.Guard;
-import br.net.pin.qinpel_srv.work.OrdersCMDs;
+import br.net.pin.qinpel_srv.work.OrdersCMD;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ServesCMDs {
+public class ServesCMD {
   public static void init(ServletContextHandler context) {
     initRun(context);
     initList(context);
@@ -28,8 +28,8 @@ public class ServesCMDs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -40,7 +40,7 @@ public class ServesCMDs {
               "You must provide a executable");
           return;
         }
-        if (!Guard.allowAPP(execute.exec, user)) {
+        if (!Guard.allowAPP(execute.exec, authed)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the command: " + execute.exec);
           return;
@@ -64,7 +64,7 @@ public class ServesCMDs {
           return;
         }
         try {
-          resp.getWriter().print(OrdersCMDs.run(executable, execute));
+          resp.getWriter().print(OrdersCMD.run(executable, execute));
           resp.setContentType("text/plain");
         } catch (Exception e) {
           throw new ServletException(e);
@@ -79,13 +79,13 @@ public class ServesCMDs {
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersCMDs.list(onWay, user));
+        resp.getWriter().print(OrdersCMD.list(onWay, authed));
       }
     }), "/list/cmds");
   }

@@ -6,21 +6,16 @@ import java.util.List;
 
 import com.google.gson.Gson;
 
-public class User {
+public class Group {
   public String name;
-  public String pass;
   public String home;
   public String lang;
   public Boolean master;
   public List<Allow> access;
-  public String group;
 
   public void fixDefaults() {
     if (this.name == null) {
       this.name = "";
-    }
-    if (this.pass == null) {
-      this.pass = "";
     }
     if (this.home == null) {
       this.home = "";
@@ -40,9 +35,6 @@ public class User {
     }
     for (var access : this.access) {
       access.fixDefaults();
-    }
-    if (this.group == null) {
-      this.group = "";
     }
   }
 

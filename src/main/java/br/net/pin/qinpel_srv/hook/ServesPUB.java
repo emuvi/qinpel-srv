@@ -3,13 +3,14 @@ package br.net.pin.qinpel_srv.hook;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
-import br.net.pin.qinpel_srv.work.OrdersPUBs;
+
+import br.net.pin.qinpel_srv.work.OrdersPUB;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ServesPUBs extends HttpServlet {
+public class ServesPUB extends HttpServlet {
 
   private String basePath;
 
@@ -46,7 +47,7 @@ public class ServesPUBs extends HttpServlet {
       resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file at: " + file);
       return;
     }
-    OrdersPUBs.send(req, resp, file, false);
+    OrdersPUB.send(req, resp, file, false);
   }
 
   @Override
@@ -62,7 +63,7 @@ public class ServesPUBs extends HttpServlet {
       resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file at: " + file);
       return;
     }
-    OrdersPUBs.send(req, resp, file, true);
+    OrdersPUB.send(req, resp, file, true);
   }
 
 }

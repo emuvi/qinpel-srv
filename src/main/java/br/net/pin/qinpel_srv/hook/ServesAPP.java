@@ -9,13 +9,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
 
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.work.Guard;
-import br.net.pin.qinpel_srv.work.OrdersAPPs;
+import br.net.pin.qinpel_srv.work.OrdersAPP;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class ServesAPPs {
+public class ServesAPP {
   public static void init(ServletContextHandler context) {
     initGet(context);
     initList(context);
@@ -41,11 +41,11 @@ public class ServesAPPs {
           return;
         }
         if (reqURL.startsWith("/qinpel-app/")) {
-          OrdersAPPs.send(reqFile, resp);
+          OrdersAPP.send(reqFile, resp);
           return;
         }
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
@@ -54,12 +54,12 @@ public class ServesAPPs {
         if (idxSlash != -1) {
           appName = appName.substring(0, idxSlash);
         }
-        if (!Guard.allowAPP(appName, user)) {
+        if (!Guard.allowAPP(appName, authed)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the application: " + appName);
           return;
         }
-        OrdersAPPs.send(reqFile, resp);
+        OrdersAPP.send(reqFile, resp);
       }
     }), "/app/*");
   }
@@ -70,13 +70,13 @@ public class ServesAPPs {
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getAuthed(onWay, req);
-        if (user == null) {
+        var authed = Guard.getAuthed(onWay, req);
+        if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersAPPs.list(onWay, user));
+        resp.getWriter().print(OrdersAPP.list(onWay, authed));
       }
     }), "/list/apps");
   }

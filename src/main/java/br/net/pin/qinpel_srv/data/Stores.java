@@ -3,19 +3,20 @@ package br.net.pin.qinpel_srv.data;
 import java.sql.Connection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.commons.dbcp2.BasicDataSource;
 
 import br.net.pin.jabx.data.Helped;
 import br.net.pin.jabx.data.Helper;
 import br.net.pin.jabx.mage.WizChars;
 
-public class Store {
+public class Stores {
   private final Air air;
   private final Map<String, Stored> stores;
 
-  public Store(Air air) throws Exception {
+  public Stores(Air air) throws Exception {
     this.air = air;
-    if (this.air.setup.servesSTRs) {
+    if (this.air.setup.servesBAS) {
       this.stores = new ConcurrentHashMap<>();
       for (var base : this.air.bases) {
         var helper = base.getHelper();

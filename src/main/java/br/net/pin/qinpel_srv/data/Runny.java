@@ -6,14 +6,15 @@ import org.apache.commons.io.FilenameUtils;
 
 public class Runny {
   public final Air air;
-  public final Entry entry;
-  public final Store store;
+  public final Autheds autheds;
+  public final Stores stores;
+
   private final PrintWriter archive;
 
   public Runny(Air air) throws Exception {
     this.air = air;
-    this.entry = new Entry();
-    this.store = new Store(air);
+    this.autheds = new Autheds();
+    this.stores = new Stores(air);
     this.archive = air.setup.serverArchive ? new PrintWriter(air.setup.serverFolder + "/"
         + air.setup.serverName + ".log") : null;
   }

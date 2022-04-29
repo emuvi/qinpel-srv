@@ -2,13 +2,16 @@ package br.net.pin.qinpel_srv.data;
 
 import java.io.File;
 import java.util.List;
+
 import com.google.gson.Gson;
+
+import br.net.pin.jabx.data.Registry;
 
 public class Allow {
   public APP app;
   public DIR dir;
   public CMD cmd;
-  public STR str;
+  public BAS bas;
   public REG reg;
   public SQL sql;
   public LIZ liz;
@@ -28,14 +31,19 @@ public class Allow {
     public List<String> args;
   }
 
-  public class STR {
+  public class BAS {
     public String name;
+    public Boolean mutate;
   }
 
   public class REG {
-    public String store;
-    public String name;
-    public Boolean mutate;
+    public String base;
+    public Registry registry;
+    public Boolean all;
+    public Boolean insert;
+    public Boolean select;
+    public Boolean update;
+    public Boolean delete;
   }
 
   public class SQL {
@@ -70,17 +78,20 @@ public class Allow {
         this.cmd = null;
       }
     }
-    if (this.str != null) {
-      if (this.str.name == null || this.str.name.isEmpty()) {
-        this.str = null;
+    if (this.bas != null) {
+      if (this.bas.name == null || this.bas.name.isEmpty()) {
+        this.bas = null;
       }
     }
     if (this.reg != null) {
-      if (this.reg.store == null || this.reg.store.isEmpty() || this.reg.name == null
-          || this.reg.name.isEmpty()) {
+      if (this.reg.base == null || this.reg.base.isEmpty() || this.reg.registry == null) {
         this.reg = null;
       } else {
-        this.reg.mutate = this.reg.mutate != null ? this.reg.mutate : false;
+        this.reg.all = this.reg.all != null ? this.reg.all : false;
+        this.reg.insert = this.reg.insert != null ? this.reg.insert : false;
+        this.reg.select = this.reg.select != null ? this.reg.select : false;
+        this.reg.update = this.reg.update != null ? this.reg.update : false;
+        this.reg.delete = this.reg.delete != null ? this.reg.delete : false;
       }
     }
     if (this.sql != null) {

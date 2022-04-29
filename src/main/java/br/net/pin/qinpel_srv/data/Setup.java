@@ -3,6 +3,7 @@ package br.net.pin.qinpel_srv.data;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+
 import com.google.gson.Gson;
 
 public class Setup {
@@ -12,15 +13,15 @@ public class Setup {
   public String serverHost;
   public Integer serverPort;
   public String serverFolder;
-  public Boolean servesPUBs;
-  public Boolean servesAPPs;
-  public Boolean servesDIRs;
-  public Boolean servesCMDs;
-  public Boolean servesSTRs;
-  public Boolean servesREGs;
-  public Boolean servesSQLs;
-  public Boolean servesLIZs;
-  public Boolean servesGIZs;
+  public Boolean servesPUB;
+  public Boolean servesAPP;
+  public Boolean servesDIR;
+  public Boolean servesCMD;
+  public Boolean servesBAS;
+  public Boolean servesREG;
+  public Boolean servesSQL;
+  public Boolean servesLIZ;
+  public Boolean servesGIZ;
 
   public Map<String, String> redirects;
 
@@ -53,33 +54,33 @@ public class Setup {
       this.serverFolder = "";
     }
     this.serverFolder = new File(this.serverFolder).getAbsolutePath();
-    
-    if (this.servesPUBs == null) {
-      this.servesPUBs = false;
+
+    if (this.servesPUB == null) {
+      this.servesPUB = false;
     }
-    if (this.servesAPPs == null) {
-      this.servesAPPs = false;
+    if (this.servesAPP == null) {
+      this.servesAPP = false;
     }
-    if (this.servesDIRs == null) {
-      this.servesDIRs = false;
+    if (this.servesDIR == null) {
+      this.servesDIR = false;
     }
-    if (this.servesCMDs == null) {
-      this.servesCMDs = false;
+    if (this.servesCMD == null) {
+      this.servesCMD = false;
     }
-    if (this.servesSTRs == null) {
-      this.servesSTRs = false;
+    if (this.servesBAS == null) {
+      this.servesBAS = false;
     }
-    if (this.servesREGs == null) {
-      this.servesREGs = false;
+    if (this.servesREG == null) {
+      this.servesREG = false;
     }
-    if (this.servesSQLs == null) {
-      this.servesSQLs = false;
+    if (this.servesSQL == null) {
+      this.servesSQL = false;
     }
-    if (this.servesLIZs == null) {
-      this.servesLIZs = false;
+    if (this.servesLIZ == null) {
+      this.servesLIZ = false;
     }
-    if (this.servesGIZs == null) {
-      this.servesGIZs = false;
+    if (this.servesGIZ == null) {
+      this.servesGIZ = false;
     }
 
     if (this.redirects == null) {

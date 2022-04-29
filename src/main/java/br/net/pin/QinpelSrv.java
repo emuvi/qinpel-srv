@@ -2,14 +2,17 @@ package br.net.pin;
 
 import java.io.File;
 import java.nio.file.Files;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+
 import br.net.pin.qinpel_srv.QinServer;
 import br.net.pin.qinpel_srv.data.Air;
 import br.net.pin.qinpel_srv.data.Bases;
+import br.net.pin.qinpel_srv.data.Groups;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.Setup;
 import br.net.pin.qinpel_srv.data.Users;
@@ -41,6 +44,13 @@ public class QinpelSrv {
     } else {
       users = new Users();
     }
+    Groups groups;
+    var groupsFile = new File("groups.json");
+    if (groupsFile.exists()) {
+      groups = Groups.fromString(Files.readString(groupsFile.toPath()));
+    } else {
+      groups = new Groups();
+    }
     Bases bases;
     var basesFile = new File("bases.json");
     if (basesFile.exists()) {
@@ -51,43 +61,43 @@ public class QinpelSrv {
     setup.fixDefaults();
     users.fixDefaults();
     bases.fixDefaults();
-    new QinServer(new Runny(new Air(setup, users, bases))).start();
+    new QinServer(new Runny(new Air(setup, users, groups, bases))).start();
   }
 
   public static Options cmdOptions() {
     var result = new Options();
-    result.addOption(Option.builder("?").longOpt("help").desc("Print usage information.")
-        .build());
-    result.addOption(Option.builder("v").longOpt("verbose").desc(
-        "Should we print verbose messages?").build());
-    result.addOption(Option.builder("k").longOpt("archive").desc(
-        "Should we archive all the messages?").build());
-    result.addOption(Option.builder("n").longOpt("name").hasArg().desc(
-        "On behalf of what name should we serve?").build());
-    result.addOption(Option.builder("h").longOpt("host").hasArg().desc(
-        "On what host should we serve?").build());
-    result.addOption(Option.builder("p").longOpt("port").hasArg().desc(
-        "On what port should we serve?").build());
-    result.addOption(Option.builder("f").longOpt("folder").hasArg().desc(
-        "On what folder should we serve?").build());
-    result.addOption(Option.builder("u").longOpt("pubs").desc(
-        "Should we serve public files?").build());
-    result.addOption(Option.builder("a").longOpt("apps").desc(
-        "Should we serve applications?").build());
-    result.addOption(Option.builder("d").longOpt("dirs").desc(
-        "Should we serve directories?").build());
-    result.addOption(Option.builder("c").longOpt("cmds").desc("Should we serve commands?")
-        .build());
-    result.addOption(Option.builder("t").longOpt("strs").desc(
-        "Should we serve databases storage?").build());
-    result.addOption(Option.builder("r").longOpt("regs").desc(
-        "Should we serve register actions?").build());
-    result.addOption(Option.builder("s").longOpt("sqls").desc(
-        "Should we serve SQL executions?").build());
-    result.addOption(Option.builder("l").longOpt("lizs").desc(
-        "Should we serve LIZ executions?").build());
-    result.addOption(Option.builder("g").longOpt("gizs").desc(
-        "Should we serve GIZ executions?").build());
+    result.addOption(Option.builder("?").longOpt("help")
+        .desc("Print usage information.").build());
+    result.addOption(Option.builder("v").longOpt("verbose")
+        .desc("Should we print verbose messages?").build());
+    result.addOption(Option.builder("k").longOpt("archive")
+        .desc("Should we archive all the messages?").build());
+    result.addOption(Option.builder("n").longOpt("name").hasArg()
+        .desc("On behalf of what name should we serve?").build());
+    result.addOption(Option.builder("h").longOpt("host").hasArg()
+        .desc("On what host should we serve?").build());
+    result.addOption(Option.builder("p").longOpt("port").hasArg()
+        .desc("On what port should we serve?").build());
+    result.addOption(Option.builder("f").longOpt("folder").hasArg()
+        .desc("On what folder should we serve?").build());
+    result.addOption(Option.builder("u").longOpt("serves-pub")
+        .desc("Should we serve public files?").build());
+    result.addOption(Option.builder("a").longOpt("serves-app")
+        .desc("Should we serve applications?").build());
+    result.addOption(Option.builder("d").longOpt("serves-dir")
+        .desc("Should we serve directories?").build());
+    result.addOption(Option.builder("c").longOpt("serves-cmd")
+        .desc("Should we serve commands?").build());
+    result.addOption(Option.builder("b").longOpt("serves-bas")
+        .desc("Should we serve databases storage?").build());
+    result.addOption(Option.builder("r").longOpt("serves-reg")
+        .desc("Should we serve register actions?").build());
+    result.addOption(Option.builder("s").longOpt("serves-sql")
+        .desc("Should we serve SQL executions?").build());
+    result.addOption(Option.builder("l").longOpt("serves-liz")
+        .desc("Should we serve LIZ executions?").build());
+    result.addOption(Option.builder("g").longOpt("serves-giz")
+        .desc("Should we serve GIZ executions?").build());
     return result;
   }
 
@@ -111,28 +121,28 @@ public class QinpelSrv {
       setup.serverFolder = command.getOptionValue('f');
     }
     if (command.hasOption('u')) {
-      setup.servesPUBs = true;
+      setup.servesPUB = true;
     }
     if (command.hasOption('a')) {
-      setup.servesAPPs = true;
+      setup.servesAPP = true;
     }
     if (command.hasOption('d')) {
-      setup.servesDIRs = true;
+      setup.servesDIR = true;
     }
     if (command.hasOption('c')) {
-      setup.servesCMDs = true;
+      setup.servesCMD = true;
     }
-    if (command.hasOption('t')) {
-      setup.servesSTRs = true;
+    if (command.hasOption('b')) {
+      setup.servesBAS = true;
     }
     if (command.hasOption('r')) {
-      setup.servesREGs = true;
+      setup.servesREG = true;
     }
     if (command.hasOption('s')) {
-      setup.servesSQLs = true;
+      setup.servesSQL = true;
     }
     if (command.hasOption('l')) {
-      setup.servesLIZs = true;
+      setup.servesLIZ = true;
     }
   }
 

@@ -1,5 +1,7 @@
 package br.net.pin.qinpel_srv.work;
 
+import br.net.pin.qinpel_srv.data.Authed;
+import br.net.pin.qinpel_srv.data.Group;
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.swap.Logged;
 import br.net.pin.qinpel_srv.swap.TryAuth;
@@ -10,8 +12,18 @@ public class Login {
     for (var user : onWay.air.users) {
       if (user.name.equals(tryAuth.name) && user.pass.equals(tryAuth.pass)) {
         var token = req.getSession().getId();
-        onWay.entry.putAuthed(token, user);
-        return new Logged(user.lang, token);
+        Group group = null;
+        if (!user.group.isEmpty()) {
+          for (var grouped : onWay.air.groups) {
+            if (user.group.equals(grouped.name)) {
+              group = grouped;
+              break;
+            }
+          }
+        }
+        var authed = new Authed(user, group);
+        onWay.autheds.addAuthed(token, authed);
+        return new Logged(token, authed.getLang());
       }
     }
     return null;

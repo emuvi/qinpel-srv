@@ -1,6 +1,7 @@
 package br.net.pin.qinpel_srv.data;
 
 import java.io.PrintWriter;
+
 import org.apache.commons.io.FilenameUtils;
 
 public class Runny {
@@ -11,7 +12,7 @@ public class Runny {
 
   public Runny(Air air) throws Exception {
     this.air = air;
-    this.entry = new Entry(air);
+    this.entry = new Entry();
     this.store = new Store(air);
     this.archive = air.setup.serverArchive ? new PrintWriter(air.setup.serverFolder + "/"
         + air.setup.serverName + ".log") : null;
@@ -112,4 +113,3 @@ public class Runny {
     return builder.toString();
   }
 }
-

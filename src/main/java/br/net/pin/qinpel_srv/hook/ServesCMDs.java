@@ -2,11 +2,13 @@ package br.net.pin.qinpel_srv.hook;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
 import br.net.pin.qinpel_srv.data.Runny;
-import br.net.pin.qinpel_srv.swop.Execute;
+import br.net.pin.qinpel_srv.swap.Execute;
 import br.net.pin.qinpel_srv.work.Guard;
 import br.net.pin.qinpel_srv.work.OrdersCMDs;
 import jakarta.servlet.ServletException;
@@ -26,7 +28,7 @@ public class ServesCMDs {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getUser(onWay, req);
+        var user = Guard.getAuthed(onWay, req);
         if (user == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -77,7 +79,7 @@ public class ServesCMDs {
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getUser(onWay, req);
+        var user = Guard.getAuthed(onWay, req);
         if (user == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;

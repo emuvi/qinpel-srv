@@ -1,4 +1,4 @@
-package br.net.pin.qinpel_srv.swop;
+package br.net.pin.qinpel_srv.swap;
 
 import com.google.gson.Gson;
 

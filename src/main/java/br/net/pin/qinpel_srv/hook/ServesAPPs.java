@@ -3,8 +3,10 @@ package br.net.pin.qinpel_srv.hook;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.work.Guard;
 import br.net.pin.qinpel_srv.work.OrdersAPPs;
@@ -24,6 +26,7 @@ public class ServesAPPs {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
+        System.out.println("SID:" + req.getSession().getId());
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
         var reqURL = req.getPathInfo();
         if (reqURL == null || reqURL.isEmpty()) {
@@ -42,7 +45,7 @@ public class ServesAPPs {
           OrdersAPPs.send(reqFile, resp);
           return;
         }
-        var user = Guard.getUser(onWay, req);
+        var user = Guard.getAuthed(onWay, req);
         if (user == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -68,7 +71,7 @@ public class ServesAPPs {
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var user = Guard.getUser(onWay, req);
+        var user = Guard.getAuthed(onWay, req);
         if (user == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN);
           return;

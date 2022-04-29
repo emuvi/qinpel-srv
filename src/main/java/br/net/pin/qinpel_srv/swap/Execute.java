@@ -1,6 +1,7 @@
-package br.net.pin.qinpel_srv.swop;
+package br.net.pin.qinpel_srv.swap;
 
 import java.util.List;
+
 import com.google.gson.Gson;
 
 public class Execute {

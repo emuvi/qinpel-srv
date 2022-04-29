@@ -1,19 +1,19 @@
-package br.net.pin.qinpel_srv.swop;
+package br.net.pin.qinpel_srv.swap;
 
 import com.google.gson.Gson;
 
-public class PathWrite {
+public class PathRead {
   public String path;
   public Boolean base64;
-  public String data;
   public Integer rangeStart;
+  public Integer rangeLength;
 
   @Override
   public String toString() {
     return new Gson().toJson(this);
   }
 
-  public static PathWrite fromString(String json) {
-    return new Gson().fromJson(json, PathWrite.class);
+  public static PathRead fromString(String json) {
+    return new Gson().fromJson(json, PathRead.class);
   }
 }

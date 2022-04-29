@@ -2,6 +2,7 @@ package br.net.pin.qinpel_srv;
 
 import java.io.File;
 import java.nio.file.Files;
+
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.HttpConfiguration;
 import org.eclipse.jetty.server.HttpConnectionFactory;
@@ -10,6 +11,7 @@ import org.eclipse.jetty.server.ServerConnector;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
+
 import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.hook.ServerAuth;
 import br.net.pin.qinpel_srv.hook.ServerUtils;
@@ -45,8 +47,8 @@ public class QinServer {
     this.connector = new ServerConnector(this.server, httpFactory);
     connector.setHost(this.runny.air.setup.serverHost);
     connector.setPort(this.runny.air.setup.serverPort);
-    this.server.setConnectors(new Connector[] {this.connector});
-    this.context = new ServletContextHandler();
+    this.server.setConnectors(new Connector[] { this.connector });
+    this.context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     this.context.setContextPath("");
     this.context.setAttribute("QinServer.runny", this.runny);
     this.server.setHandler(this.context);
@@ -156,4 +158,3 @@ public class QinServer {
   }
 
 }
-

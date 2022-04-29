@@ -26,7 +26,6 @@ public class ServesAPPs {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        System.out.println("SID:" + req.getSession().getId());
         var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
         var reqURL = req.getPathInfo();
         if (reqURL == null || reqURL.isEmpty()) {

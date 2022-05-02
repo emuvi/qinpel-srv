@@ -6,13 +6,12 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.swap.OnePath;
 import br.net.pin.qinpel_srv.swap.PathRead;
 import br.net.pin.qinpel_srv.swap.PathWrite;
 import br.net.pin.qinpel_srv.swap.TwoPath;
-import br.net.pin.qinpel_srv.work.Guard;
 import br.net.pin.qinpel_srv.work.OrdersDIR;
+import br.net.pin.qinpel_srv.work.Runner;
 import br.net.pin.qinpel_srv.work.Utils;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -39,8 +38,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -52,7 +51,7 @@ public class ServesDIR {
           return;
         }
         var path = Utils.newFile(onePath.path, authed.getHome());
-        if (!Guard.allowDIR(path, authed, false)) {
+        if (!authed.allowDIR(path.getAbsolutePath(), false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the path: " + path);
           return;
@@ -78,8 +77,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -91,7 +90,7 @@ public class ServesDIR {
           return;
         }
         var path = Utils.newFile(onePath.path, authed.getHome());
-        if (!Guard.allowDIR(path, authed, true)) {
+        if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;
@@ -107,8 +106,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -126,12 +125,12 @@ public class ServesDIR {
         }
         var origin = Utils.newFile(twoPath.origin, authed.getHome());
         var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
-        if (!Guard.allowDIR(origin, authed, false)) {
+        if (!authed.allowDIR(origin.getAbsolutePath(), false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the origin: " + origin);
           return;
         }
-        if (!Guard.allowDIR(destiny, authed, true)) {
+        if (!authed.allowDIR(destiny.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the destiny: " + destiny);
           return;
@@ -157,8 +156,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -176,12 +175,12 @@ public class ServesDIR {
         }
         var origin = Utils.newFile(twoPath.origin, authed.getHome());
         var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
-        if (!Guard.allowDIR(origin, authed, true)) {
+        if (!authed.allowDIR(origin.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the origin: " + origin);
           return;
         }
-        if (!Guard.allowDIR(destiny, authed, true)) {
+        if (!authed.allowDIR(destiny.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the destiny: " + destiny);
           return;
@@ -207,8 +206,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -220,7 +219,7 @@ public class ServesDIR {
           return;
         }
         var path = Utils.newFile(onePath.path, authed.getHome());
-        if (!Guard.allowDIR(path, authed, true)) {
+        if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;
@@ -246,8 +245,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -259,7 +258,7 @@ public class ServesDIR {
           return;
         }
         var path = Utils.newFile(pathRead.path, authed.getHome());
-        if (!Guard.allowDIR(path, authed, false)) {
+        if (!authed.allowDIR(path.getAbsolutePath(), false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the path: " + path);
           return;
@@ -277,8 +276,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -290,7 +289,7 @@ public class ServesDIR {
           return;
         }
         var path = Utils.newFile(pathWrite.path, authed.getHome());
-        if (!Guard.allowDIR(path, authed, true)) {
+        if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;
@@ -308,8 +307,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -321,7 +320,7 @@ public class ServesDIR {
           return;
         }
         var path = Utils.newFile(pathWrite.path, authed.getHome());
-        if (!Guard.allowDIR(path, authed, true)) {
+        if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;
@@ -339,8 +338,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -358,12 +357,12 @@ public class ServesDIR {
         }
         var origin = Utils.newFile(twoPath.origin, authed.getHome());
         var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
-        if (!Guard.allowDIR(origin, authed, false)) {
+        if (!authed.allowDIR(origin.getAbsolutePath(), false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the origin: " + origin);
           return;
         }
-        if (!Guard.allowDIR(destiny, authed, true)) {
+        if (!authed.allowDIR(destiny.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the destiny: " + destiny);
           return;
@@ -389,8 +388,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -408,12 +407,12 @@ public class ServesDIR {
         }
         var origin = Utils.newFile(twoPath.origin, authed.getHome());
         var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
-        if (!Guard.allowDIR(origin, authed, true)) {
+        if (!authed.allowDIR(origin.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the origin: " + origin);
           return;
         }
-        if (!Guard.allowDIR(destiny, authed, true)) {
+        if (!authed.allowDIR(destiny.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the destiny: " + destiny);
           return;
@@ -439,8 +438,8 @@ public class ServesDIR {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -452,7 +451,7 @@ public class ServesDIR {
           return;
         }
         var path = Utils.newFile(onePath.path, authed.getHome());
-        if (!Guard.allowDIR(path, authed, true)) {
+        if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
           return;

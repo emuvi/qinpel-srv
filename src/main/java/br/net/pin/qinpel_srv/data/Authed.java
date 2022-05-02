@@ -136,11 +136,11 @@ public class Authed {
     return false;
   }
 
-  public boolean allowREG(String base, Registry registry, Deed toDeed) {
+  public boolean allowREG(String base, Registry registry, Deed deed) {
     if (this.isMaster()) {
       return true;
     }
-    if (!this.allowBAS(base, toDeed.mutates)) {
+    if (!this.allowBAS(base, deed.mutates)) {
       return false;
     }
     for (var access : this.user.access) {
@@ -148,7 +148,7 @@ public class Authed {
         if (access.reg.all) {
           return true;
         }
-        switch (toDeed) {
+        switch (deed) {
           case INSERT:
             if (access.reg.insert) {
               return true;
@@ -178,7 +178,7 @@ public class Authed {
           if (access.reg.all) {
             return true;
           }
-          switch (toDeed) {
+          switch (deed) {
             case INSERT:
               if (access.reg.insert) {
                 return true;

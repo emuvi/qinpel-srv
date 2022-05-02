@@ -12,7 +12,7 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 
-import br.net.pin.qinpel_srv.data.Runny;
+import br.net.pin.qinpel_srv.data.Way;
 import br.net.pin.qinpel_srv.hook.ServerAuth;
 import br.net.pin.qinpel_srv.hook.ServerUtils;
 import br.net.pin.qinpel_srv.hook.ServesAPP;
@@ -27,7 +27,7 @@ import br.net.pin.qinpel_srv.hook.ServesSQL;
 
 public class QinServer {
 
-  private final Runny runny;
+  private final Way runny;
   private final QueuedThreadPool threadPool;
   private final Server server;
   private final HttpConfiguration httpConfig;
@@ -35,7 +35,7 @@ public class QinServer {
   private final ServerConnector connector;
   private final ServletContextHandler context;
 
-  public QinServer(Runny runny) throws Exception {
+  public QinServer(Way runny) throws Exception {
     this.runny = runny;
     this.threadPool = new QueuedThreadPool(this.runny.air.setup.threadsMax,
         this.runny.air.setup.threadsMin, this.runny.air.setup.threadsIdleTimeout);
@@ -50,7 +50,7 @@ public class QinServer {
     this.server.setConnectors(new Connector[] { this.connector });
     this.context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     this.context.setContextPath("");
-    this.context.setAttribute("QinServer.runny", this.runny);
+    this.context.setAttribute("QinServer.Way", this.runny);
     this.server.setHandler(this.context);
     this.init_serves();
   }

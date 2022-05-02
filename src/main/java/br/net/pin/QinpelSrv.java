@@ -13,9 +13,9 @@ import br.net.pin.qinpel_srv.QinServer;
 import br.net.pin.qinpel_srv.data.Air;
 import br.net.pin.qinpel_srv.data.Bases;
 import br.net.pin.qinpel_srv.data.Groups;
-import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.data.Setup;
 import br.net.pin.qinpel_srv.data.Users;
+import br.net.pin.qinpel_srv.data.Way;
 
 public class QinpelSrv {
 
@@ -61,7 +61,7 @@ public class QinpelSrv {
     setup.fixDefaults();
     users.fixDefaults();
     bases.fixDefaults();
-    new QinServer(new Runny(new Air(setup, users, groups, bases))).start();
+    new QinServer(new Way(new Air(setup, users, groups, bases))).start();
   }
 
   public static Options cmdOptions() {

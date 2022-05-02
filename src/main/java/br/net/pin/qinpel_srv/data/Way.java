@@ -4,14 +4,14 @@ import java.io.PrintWriter;
 
 import org.apache.commons.io.FilenameUtils;
 
-public class Runny {
+public class Way {
   public final Air air;
   public final Autheds autheds;
   public final Stores stores;
 
   private final PrintWriter archive;
 
-  public Runny(Air air) throws Exception {
+  public Way(Air air) throws Exception {
     this.air = air;
     this.autheds = new Autheds();
     this.stores = new Stores(air);

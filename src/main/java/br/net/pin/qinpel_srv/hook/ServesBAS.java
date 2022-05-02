@@ -5,9 +5,8 @@ import java.io.IOException;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import br.net.pin.qinpel_srv.data.Runny;
-import br.net.pin.qinpel_srv.work.Guard;
 import br.net.pin.qinpel_srv.work.OrdersBAS;
+import br.net.pin.qinpel_srv.work.Runner;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,13 +22,13 @@ public class ServesBAS {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
-        resp.getWriter().print(OrdersBAS.list(onWay, authed));
+        resp.getWriter().print(OrdersBAS.list(way, authed));
       }
     }), "/list/bases");
   }

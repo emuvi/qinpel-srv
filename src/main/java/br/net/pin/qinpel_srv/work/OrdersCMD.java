@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 import br.net.pin.qinpel_srv.data.Authed;
-import br.net.pin.qinpel_srv.data.Runny;
+import br.net.pin.qinpel_srv.data.Way;
 import br.net.pin.qinpel_srv.swap.Execute;
 
 public class OrdersCMD {
@@ -84,8 +84,8 @@ public class OrdersCMD {
     return result.toString();
   }
 
-  public static String list(Runny onWay, Authed forAuthed) {
-    var cmdsDir = new File(onWay.air.setup.serverFolder, "cmd");
+  public static String list(Way way, Authed forAuthed) {
+    var cmdsDir = new File(way.air.setup.serverFolder, "cmd");
     if (forAuthed.isMaster()) {
       return Utils.listFolders(cmdsDir);
     }

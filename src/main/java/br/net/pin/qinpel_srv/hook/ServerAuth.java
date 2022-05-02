@@ -6,9 +6,8 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.swap.TryAuth;
-import br.net.pin.qinpel_srv.work.Login;
+import br.net.pin.qinpel_srv.work.Runner;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,10 +23,10 @@ public class ServerAuth {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
+        var way = Runner.getWay(req);
         var body = IOUtils.toString(req.getReader());
         var tryAuth = TryAuth.fromString(body);
-        var logged = Login.tryEnter(tryAuth, onWay, req);
+        var logged = Runner.tryEnter(tryAuth, way, req);
         if (logged == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "The user and/or pass is incorrect.");

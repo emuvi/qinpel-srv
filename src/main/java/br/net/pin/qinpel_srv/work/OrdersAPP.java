@@ -7,7 +7,7 @@ import java.io.IOException;
 import org.apache.commons.io.IOUtils;
 
 import br.net.pin.qinpel_srv.data.Authed;
-import br.net.pin.qinpel_srv.data.Runny;
+import br.net.pin.qinpel_srv.data.Way;
 import jakarta.servlet.http.HttpServletResponse;
 
 public class OrdersAPP {
@@ -19,8 +19,8 @@ public class OrdersAPP {
     }
   }
 
-  public static String list(Runny onWay, Authed forAuthed) {
-    var appsDir = new File(onWay.air.setup.serverFolder, "app");
+  public static String list(Way way, Authed forAuthed) {
+    var appsDir = new File(way.air.setup.serverFolder, "app");
     if (forAuthed.isMaster()) {
       return Utils.listFolders(appsDir);
     }

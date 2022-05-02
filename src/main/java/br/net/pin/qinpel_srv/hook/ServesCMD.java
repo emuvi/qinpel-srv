@@ -7,10 +7,9 @@ import org.apache.commons.io.IOUtils;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import br.net.pin.qinpel_srv.data.Runny;
 import br.net.pin.qinpel_srv.swap.Execute;
-import br.net.pin.qinpel_srv.work.Guard;
 import br.net.pin.qinpel_srv.work.OrdersCMD;
+import br.net.pin.qinpel_srv.work.Runner;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,8 +26,8 @@ public class ServesCMD {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
@@ -40,12 +39,12 @@ public class ServesCMD {
               "You must provide a executable");
           return;
         }
-        if (!Guard.allowAPP(execute.exec, authed)) {
+        if (!authed.allowCMD(execute.exec)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the command: " + execute.exec);
           return;
         }
-        var reqDir = new File(onWay.air.setup.serverFolder, "cmd/" + execute.exec);
+        var reqDir = new File(way.air.setup.serverFolder, "cmd/" + execute.exec);
         if (!reqDir.exists()) {
           resp.sendError(HttpServletResponse.SC_NOT_FOUND,
               "There is no command on folder: " + reqDir);
@@ -78,14 +77,14 @@ public class ServesCMD {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersCMD.list(onWay, authed));
+        resp.getWriter().print(OrdersCMD.list(way, authed));
       }
     }), "/list/cmds");
   }

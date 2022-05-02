@@ -7,9 +7,8 @@ import java.net.URLDecoder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import br.net.pin.qinpel_srv.data.Runny;
-import br.net.pin.qinpel_srv.work.Guard;
 import br.net.pin.qinpel_srv.work.OrdersAPP;
+import br.net.pin.qinpel_srv.work.Runner;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,15 +25,15 @@ public class ServesAPP {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var reqURL = req.getPathInfo();
+        var reqURL = req.getPathInfo().substring(1);
         if (reqURL == null || reqURL.isEmpty()) {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
               "You must provide a path name");
           return;
         }
         reqURL = URLDecoder.decode(reqURL, "UTF-8");
-        var reqFile = new File(onWay.air.setup.serverFolder, "app" + reqURL);
+        var way = Runner.getWay(req);
+        var reqFile = new File(way.air.setup.serverFolder, "app/" + reqURL);
         if (!reqFile.exists()) {
           resp.sendError(HttpServletResponse.SC_NOT_FOUND, "There is no file at: "
               + reqFile);
@@ -44,17 +43,17 @@ public class ServesAPP {
           OrdersAPP.send(reqFile, resp);
           return;
         }
-        var authed = Guard.getAuthed(onWay, req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
-        var appName = reqURL.substring(1);
+        var appName = reqURL;
         var idxSlash = appName.indexOf('/');
         if (idxSlash != -1) {
           appName = appName.substring(0, idxSlash);
         }
-        if (!Guard.allowAPP(appName, authed)) {
+        if (!authed.allowAPP(appName)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the application: " + appName);
           return;
@@ -69,14 +68,14 @@ public class ServesAPP {
       @Override
       protected void doGet(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var onWay = (Runny) req.getServletContext().getAttribute("QinServer.runny");
-        var authed = Guard.getAuthed(onWay, req);
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
         if (authed == null) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN);
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
           return;
         }
         resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersAPP.list(onWay, authed));
+        resp.getWriter().print(OrdersAPP.list(way, authed));
       }
     }), "/list/apps");
   }

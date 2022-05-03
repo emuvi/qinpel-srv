@@ -9,6 +9,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import br.net.pin.jabx.data.Deed;
 import br.net.pin.jabx.data.Delete;
 import br.net.pin.jabx.data.Insert;
+import br.net.pin.jabx.data.Select;
 import br.net.pin.jabx.data.Update;
 import br.net.pin.qinpel_srv.work.OrdersREG;
 import br.net.pin.qinpel_srv.work.Runner;
@@ -60,7 +61,25 @@ public class ServesREG {
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
         var base = req.getPathInfo().substring(1);
-        resp.getWriter().print("Base: " + base);
+        if (base == null || base.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a base name");
+          return;
+        }
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
+        if (authed == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        var body = IOUtils.toString(req.getReader());
+        var select = Select.fromString(body);
+        if (!authed.allowREG(base, select.registry, Deed.SELECT)) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN,
+              "You don't have access to deed this registry");
+          return;
+        }
+        resp.getWriter().print(OrdersREG.regAsk(way, base, select));
       }
     }), "/reg/ask/*");
   }

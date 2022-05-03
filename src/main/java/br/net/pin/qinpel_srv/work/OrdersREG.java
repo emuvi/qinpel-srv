@@ -15,7 +15,6 @@ import jakarta.servlet.ServletException;
 public class OrdersREG {
   public static String regNew(Way way, String base, Insert insert) throws ServletException {
     try {
-      System.out.println(insert.toString());
       var helped = way.stores.getHelp(base);
       var result = helped.helper.insert(helped.link, insert);
       return "Affected: " + result;

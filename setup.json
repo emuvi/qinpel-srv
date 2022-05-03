@@ -3,13 +3,13 @@
   "serverArchive": true,
   "serverHost": "0.0.0.0",
   "serverPort": 5490,
-  "servesPUBs": true,
-  "servesAPPs": true,
-  "servesDIRs": true,
-  "servesCMDs": true,
-  "servesDATs": true,
-  "servesSTRs": true,
-  "servesREGs": true,
-  "servesSQLs": true,
-  "servesLIZs": true
+  "servesPUB": true,
+  "servesAPP": true,
+  "servesDIR": true,
+  "servesCMD": true,
+  "servesBAS": true,
+  "servesREG": true,
+  "servesSQL": true,
+  "servesLIZ": true,
+  "servesGIZ": true
 }

@@ -34,3 +34,8 @@ local origin_setup = "setup.json"
 local destiny_setup = Liz.path_join(tst_path, origin_setup)
 Liz.rm(destiny_setup)
 Liz.cp(origin_setup, destiny_setup)
+
+local origin_bases = "bases.json"
+local destiny_bases = Liz.path_join(tst_path, origin_bases)
+Liz.rm(destiny_bases)
+Liz.cp(origin_bases, destiny_bases)

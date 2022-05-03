@@ -1,0 +1,13 @@
+[
+  {
+    "link": {
+      "name": "tester",
+      "base": "PostgreClient",
+      "path": "pointel.pointto.us",
+      "port": "5432",
+      "data": "pointel",
+      "user": "tester",
+      "pass": "${env:BASE_TEST_PASS}"
+    }
+  }
+]

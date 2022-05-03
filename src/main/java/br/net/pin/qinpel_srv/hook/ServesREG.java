@@ -10,6 +10,7 @@ import br.net.pin.jabx.data.Deed;
 import br.net.pin.jabx.data.Delete;
 import br.net.pin.jabx.data.Insert;
 import br.net.pin.jabx.data.Update;
+import br.net.pin.qinpel_srv.work.OrdersREG;
 import br.net.pin.qinpel_srv.work.Runner;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -48,13 +49,7 @@ public class ServesREG {
               "You don't have access to deed this registry");
           return;
         }
-        try {
-          var helped = way.stores.getHelp(base);
-          var result = helped.helper.insert(helped.link, insert);
-          resp.getWriter().print("Affected: " + result);
-        } catch (Exception e) {
-          throw new ServletException(e);
-        }
+        resp.getWriter().print(OrdersREG.regNew(way, base, insert));
       }
     }), "/reg/new/*");
   }
@@ -94,13 +89,7 @@ public class ServesREG {
               "You don't have access to deed this registry");
           return;
         }
-        try {
-          var helped = way.stores.getHelp(base);
-          var result = helped.helper.update(helped.link, update);
-          resp.getWriter().print("Affected: " + result);
-        } catch (Exception e) {
-          throw new ServletException(e);
-        }
+        resp.getWriter().print(OrdersREG.regSet(way, base, update));
       }
     }), "/reg/set/*");
   }
@@ -129,13 +118,7 @@ public class ServesREG {
               "You don't have access to deed this registry");
           return;
         }
-        try {
-          var helped = way.stores.getHelp(base);
-          var result = helped.helper.delete(helped.link, delete);
-          resp.getWriter().print("Affected: " + result);
-        } catch (Exception e) {
-          throw new ServletException(e);
-        }
+        resp.getWriter().print(OrdersREG.regDel(way, base, delete));
       }
     }), "/reg/del/*");
   }

@@ -15,24 +15,30 @@ public class Authed {
   public String getHome() {
     if (!this.user.home.isEmpty()) {
       return this.user.home;
-    } else {
+    } else if (this.group != null) {
       return this.group.home;
+    } else {
+      return "";
     }
   }
 
   public String getLang() {
     if (!this.user.lang.isEmpty()) {
       return this.user.lang;
-    } else {
+    } else if (this.group != null) {
       return this.group.lang;
+    } else {
+      return "";
     }
   }
 
   public Boolean isMaster() {
     if (this.user.master) {
       return true;
-    } else {
+    } else if (this.group != null) {
       return this.group.master;
+    } else {
+      return false;
     }
   }
 

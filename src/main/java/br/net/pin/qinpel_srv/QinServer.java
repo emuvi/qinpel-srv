@@ -58,42 +58,42 @@ public class QinServer {
   private void init_serves() throws Exception {
     this.server_auth();
     if (this.runny.air.setup.servesPUB) {
-      this.serves_pubs();
+      this.serves_pub();
     }
     if (this.runny.air.setup.servesAPP) {
-      this.serves_apps();
+      this.serves_app();
     }
     if (this.runny.air.setup.servesDIR) {
-      this.serves_dirs();
+      this.serves_dir();
     }
     if (this.runny.air.setup.servesCMD) {
-      this.serves_cmds();
+      this.serves_cmd();
     }
     if (this.runny.air.setup.servesBAS) {
-      this.serves_strs();
+      this.serves_bas();
     }
     if (this.runny.air.setup.servesBAS && this.runny.air.setup.servesREG) {
-      this.serves_regs();
+      this.serves_reg();
     }
     if (this.runny.air.setup.servesBAS && this.runny.air.setup.servesSQL) {
-      this.serves_sqls();
+      this.serves_sql();
     }
     if (this.runny.air.setup.servesLIZ) {
-      this.serves_lizs();
+      this.serves_liz();
     }
     if (this.runny.air.setup.servesGIZ) {
-      this.serves_gizs();
+      this.serves_giz();
     }
     this.server_utils();
   }
 
   private void server_auth() {
-    this.runny.logInfo("Serving Auths...");
+    this.runny.logInfo("Serving Auth...");
     ServerAuth.init(this.context);
   }
 
-  private void serves_pubs() throws Exception {
-    this.runny.logInfo("Serving PUBs...");
+  private void serves_pub() throws Exception {
+    this.runny.logInfo("Serving PUB...");
     var holder = new ServletHolder(new ServesPUB());
     var pubDir = new File("pub");
     if (!pubDir.exists()) {
@@ -103,43 +103,43 @@ public class QinServer {
     this.context.addServlet(holder, "/pub/*");
   }
 
-  private void serves_apps() {
-    this.runny.logInfo("Serving APPs...");
+  private void serves_app() {
+    this.runny.logInfo("Serving APP...");
     ServesAPP.init(this.context);
   }
 
-  private void serves_dirs() {
-    this.runny.logInfo("Serving DIRs...");
+  private void serves_dir() {
+    this.runny.logInfo("Serving DIR...");
     ServesDIR.init(this.context);
   }
 
-  private void serves_cmds() {
-    this.runny.logInfo("Serving CMDs...");
+  private void serves_cmd() {
+    this.runny.logInfo("Serving CMD...");
     ServesCMD.init(this.context);
   }
 
-  private void serves_strs() {
-    this.runny.logInfo("Serving STRs...");
+  private void serves_bas() {
+    this.runny.logInfo("Serving BAS...");
     ServesBAS.init(this.context);
   }
 
-  private void serves_regs() {
-    this.runny.logInfo("Serving REGs...");
+  private void serves_reg() {
+    this.runny.logInfo("Serving REG...");
     ServesREG.init(this.context);
   }
 
-  private void serves_sqls() {
-    this.runny.logInfo("Serving SQLs...");
+  private void serves_sql() {
+    this.runny.logInfo("Serving SQL...");
     ServesSQL.init(this.context);
   }
 
-  private void serves_lizs() {
-    this.runny.logInfo("Serving LIZs...");
+  private void serves_liz() {
+    this.runny.logInfo("Serving LIZ...");
     ServesLIZ.init(this.context);
   }
 
-  private void serves_gizs() {
-    this.runny.logInfo("Serving GIZs...");
+  private void serves_giz() {
+    this.runny.logInfo("Serving GIZ...");
     ServesGIZ.init(this.context);
   }
 

@@ -39,7 +39,7 @@ public class ServesAPP {
               + reqFile);
           return;
         }
-        if (reqURL.startsWith("/qinpel-app/")) {
+        if (reqURL.startsWith("qinpel-app/")) {
           OrdersAPP.send(reqFile, resp);
           return;
         }

@@ -37,6 +37,7 @@ public class ServerUtils {
           throws ServletException, IOException {
         var way = Runner.getWay(req);
         var authed = Runner.getAuthed(way, req);
+        resp.setContentType("text/plain");
         if (authed != null) {
           resp.getWriter().print(authed.user.name);
         } else {

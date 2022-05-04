@@ -59,7 +59,7 @@ public class Stores {
     if (stored == null) {
       throw new Exception("Base " + onBase + " not found");
     }
-    return new Helped(stored.helper, stored.source.getConnection());
+    return new Helped(stored.source.getConnection(), stored.helper);
   }
 
   private static class Stored {

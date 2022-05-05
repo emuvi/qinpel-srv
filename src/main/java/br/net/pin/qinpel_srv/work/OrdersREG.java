@@ -13,19 +13,19 @@ import br.net.pin.qinpel_srv.data.Way;
 import jakarta.servlet.ServletException;
 
 public class OrdersREG {
-  public static String regNew(Way way, String base, Insert insert) throws ServletException {
+  public static String regNew(Way way, Insert insert) throws ServletException {
     try {
-      var helped = way.stores.getHelp(base);
+      var helped = way.stores.getHelp(insert.registry.base);
       var result = helped.helper.insert(helped.link, insert);
-      return "Affected: " + result;
+      return "Inserted: " + result;
     } catch (Exception e) {
       throw new ServletException(e);
     }
   }
 
-  public static String regAsk(Way way, String base, Select select) throws ServletException {
+  public static String regAsk(Way way, Select select) throws ServletException {
     try {
-      var helped = way.stores.getHelp(base);
+      var helped = way.stores.getHelp(select.registry.base);
       var result = helped.helper.select(helped.link, select);
       var maker = new CSVMaker(result, select.fields);
       var build = new StringWriter();
@@ -42,21 +42,21 @@ public class OrdersREG {
     }
   }
 
-  public static String regSet(Way way, String base, Update update) throws ServletException {
+  public static String regSet(Way way, Update update) throws ServletException {
     try {
-      var helped = way.stores.getHelp(base);
+      var helped = way.stores.getHelp(update.registry.base);
       var result = helped.helper.update(helped.link, update);
-      return "Affected: " + result;
+      return "Updated: " + result;
     } catch (Exception e) {
       throw new ServletException(e);
     }
   }
 
-  public static String regDel(Way way, String base, Delete delete) throws ServletException {
+  public static String regDel(Way way, Delete delete) throws ServletException {
     try {
-      var helped = way.stores.getHelp(base);
+      var helped = way.stores.getHelp(delete.registry.base);
       var result = helped.helper.delete(helped.link, delete);
-      return "Affected: " + result;
+      return "Deleted: " + result;
     } catch (Exception e) {
       throw new ServletException(e);
     }

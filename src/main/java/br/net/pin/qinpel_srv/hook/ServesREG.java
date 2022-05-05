@@ -31,12 +31,6 @@ public class ServesREG {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var base = req.getPathInfo().substring(1);
-        if (base == null || base.isEmpty()) {
-          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
-              "You must provide a base name");
-          return;
-        }
         var way = Runner.getWay(req);
         var authed = Runner.getAuthed(way, req);
         if (authed == null) {
@@ -45,14 +39,30 @@ public class ServesREG {
         }
         var body = IOUtils.toString(req.getReader());
         var insert = Insert.fromString(body);
-        if (!authed.allowREG(base, insert.registry, Deed.INSERT)) {
+        if (insert.registry == null) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry");
+          return;
+        }
+        if (insert.registry.base == null || insert.registry.base.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry base");
+          return;
+        }
+        if (insert.registry.name == null || insert.registry.name.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry name");
+          return;
+        }
+        if (!authed.allowREG(insert.registry, Deed.INSERT)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to deed this registry");
           return;
         }
-        resp.getWriter().print(OrdersREG.regNew(way, base, insert));
+        resp.setContentType("text/plain");
+        resp.getWriter().print(OrdersREG.regNew(way, insert));
       }
-    }), "/reg/new/*");
+    }), "/reg/new");
   }
 
   private static void initRegAsk(ServletContextHandler context) {
@@ -60,12 +70,6 @@ public class ServesREG {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var base = req.getPathInfo().substring(1);
-        if (base == null || base.isEmpty()) {
-          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
-              "You must provide a base name");
-          return;
-        }
         var way = Runner.getWay(req);
         var authed = Runner.getAuthed(way, req);
         if (authed == null) {
@@ -74,14 +78,30 @@ public class ServesREG {
         }
         var body = IOUtils.toString(req.getReader());
         var select = Select.fromString(body);
-        if (!authed.allowREG(base, select.registry, Deed.SELECT)) {
+        if (select.registry == null) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry");
+          return;
+        }
+        if (select.registry.base == null || select.registry.base.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry base");
+          return;
+        }
+        if (select.registry.name == null || select.registry.name.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry name");
+          return;
+        }
+        if (!authed.allowREG(select.registry, Deed.SELECT)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to deed this registry");
           return;
         }
-        resp.getWriter().print(OrdersREG.regAsk(way, base, select));
+        resp.setContentType("text/plain");
+        resp.getWriter().print(OrdersREG.regAsk(way, select));
       }
-    }), "/reg/ask/*");
+    }), "/reg/ask");
   }
 
   private static void initRegSet(ServletContextHandler context) {
@@ -89,12 +109,6 @@ public class ServesREG {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var base = req.getPathInfo().substring(1);
-        if (base == null || base.isEmpty()) {
-          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
-              "You must provide a base name");
-          return;
-        }
         var way = Runner.getWay(req);
         var authed = Runner.getAuthed(way, req);
         if (authed == null) {
@@ -103,14 +117,30 @@ public class ServesREG {
         }
         var body = IOUtils.toString(req.getReader());
         var update = Update.fromString(body);
-        if (!authed.allowREG(base, update.registry, Deed.UPDATE)) {
+        if (update.registry == null) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry");
+          return;
+        }
+        if (update.registry.base == null || update.registry.base.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry base");
+          return;
+        }
+        if (update.registry.name == null || update.registry.name.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry name");
+          return;
+        }
+        if (!authed.allowREG(update.registry, Deed.UPDATE)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to deed this registry");
           return;
         }
-        resp.getWriter().print(OrdersREG.regSet(way, base, update));
+        resp.setContentType("text/plain");
+        resp.getWriter().print(OrdersREG.regSet(way, update));
       }
-    }), "/reg/set/*");
+    }), "/reg/set");
   }
 
   private static void initRegDel(ServletContextHandler context) {
@@ -118,12 +148,6 @@ public class ServesREG {
       @Override
       protected void doPost(HttpServletRequest req, HttpServletResponse resp)
           throws ServletException, IOException {
-        var base = req.getPathInfo().substring(1);
-        if (base == null || base.isEmpty()) {
-          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
-              "You must provide a base name");
-          return;
-        }
         var way = Runner.getWay(req);
         var authed = Runner.getAuthed(way, req);
         if (authed == null) {
@@ -132,13 +156,29 @@ public class ServesREG {
         }
         var body = IOUtils.toString(req.getReader());
         var delete = Delete.fromString(body);
-        if (!authed.allowREG(base, delete.registry, Deed.DELETE)) {
+        if (delete.registry == null) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry");
+          return;
+        }
+        if (delete.registry.base == null || delete.registry.base.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry base");
+          return;
+        }
+        if (delete.registry.name == null || delete.registry.name.isEmpty()) {
+          resp.sendError(HttpServletResponse.SC_BAD_REQUEST,
+              "You must provide a registry name");
+          return;
+        }
+        if (!authed.allowREG(delete.registry, Deed.DELETE)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to deed this registry");
           return;
         }
-        resp.getWriter().print(OrdersREG.regDel(way, base, delete));
+        resp.setContentType("text/plain");
+        resp.getWriter().print(OrdersREG.regDel(way, delete));
       }
-    }), "/reg/del/*");
+    }), "/reg/del");
   }
 }

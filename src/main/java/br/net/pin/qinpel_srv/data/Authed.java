@@ -142,11 +142,11 @@ public class Authed {
     return false;
   }
 
-  public boolean allowREG(String base, Registry registry, Deed deed) {
+  public boolean allowREG(Registry registry, Deed deed) {
     if (this.isMaster()) {
       return true;
     }
-    if (!this.allowBAS(base, deed.mutates)) {
+    if (!this.allowBAS(registry.base, deed.mutates)) {
       return false;
     }
     for (var access : this.user.access) {

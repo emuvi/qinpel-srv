@@ -31,6 +31,18 @@ public class Way {
     }
   }
 
+  public void logStep(Object value) {
+    var message = logMake("STEP", String.valueOf(value), this);
+    if (this.air.setup.serverVerbose) {
+      System.out.print(message);
+      System.out.flush();
+    }
+    if (this.archive != null) {
+      this.archive.print(message);
+      this.archive.flush();
+    }
+  }
+
   public void logWarn(String message) {
     message = logMake("WARN", message, this);
     if (this.air.setup.serverVerbose) {
@@ -78,8 +90,8 @@ public class Way {
     StackTraceElement elements[] = Thread.currentThread().getStackTrace();
     for (int i = elements.length - 1; i >= 0; i--) {
       StackTraceElement element = elements[i];
-      if (element.getClassName().startsWith("br.net.pin.qinpel_srv") && !element
-          .getClassName().equals("br.net.pin.qinpel_srv.data.Runny")) {
+      if (element.getClassName().startsWith("br.net.pin.qinpel_srv") &&
+          !element.getClassName().equals("br.net.pin.qinpel_srv.data.Way")) {
         builder.append(" |> ");
         builder.append(FilenameUtils.getBaseName(element.getFileName()));
         builder.append("[");
@@ -89,7 +101,7 @@ public class Way {
         builder.append(")");
       }
     }
-    builder.append("}");
+    builder.append(" }");
     return builder.toString();
   }
 
@@ -99,8 +111,8 @@ public class Way {
     StackTraceElement elements[] = ofError.getStackTrace();
     for (int i = elements.length - 1; i >= 0; i--) {
       StackTraceElement element = elements[i];
-      if (element.getClassName().startsWith("br.net.pin.qinpel_srv") && !element
-          .getClassName().equals("br.net.pin.qinpel_srv.data.Runny")) {
+      if (element.getClassName().startsWith("br.net.pin.qinpel_srv") &&
+          !element.getClassName().equals("br.net.pin.qinpel_srv.data.Way")) {
         builder.append(" |> ");
         builder.append(FilenameUtils.getBaseName(element.getFileName()));
         builder.append("[");
@@ -110,7 +122,7 @@ public class Way {
         builder.append(")");
       }
     }
-    builder.append("}");
+    builder.append(" }");
     return builder.toString();
   }
 }

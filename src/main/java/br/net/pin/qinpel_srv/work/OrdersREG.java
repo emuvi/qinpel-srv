@@ -8,13 +8,13 @@ import br.net.pin.jabx.data.Select;
 import br.net.pin.jabx.data.Update;
 import br.net.pin.jabx.flow.CSVMaker;
 import br.net.pin.jabx.flow.CSVWrite;
-import br.net.pin.jabx.mage.WizData;
 import br.net.pin.qinpel_srv.data.Way;
 import jakarta.servlet.ServletException;
 
 public class OrdersREG {
   public static String regNew(Way way, Insert insert) throws ServletException {
     try {
+      way.logStep(insert);
       var helped = way.stores.getHelp(insert.registry.base);
       var result = helped.helper.insert(helped.link, insert);
       return "Inserted: " + result;
@@ -25,13 +25,13 @@ public class OrdersREG {
 
   public static String regAsk(Way way, Select select) throws ServletException {
     try {
+      way.logStep(select);
       var helped = way.stores.getHelp(select.registry.base);
       var result = helped.helper.select(helped.link, select);
       var maker = new CSVMaker(result, select.fields);
       var build = new StringWriter();
       try (var write = new CSVWrite(build)) {
-        String[] line = WizData.getColumnNames(result);
-        write.writeLine(line);
+        String[] line;
         while ((line = maker.makeLine()) != null) {
           write.writeLine(line);
         }
@@ -44,6 +44,7 @@ public class OrdersREG {
 
   public static String regSet(Way way, Update update) throws ServletException {
     try {
+      way.logStep(update);
       var helped = way.stores.getHelp(update.registry.base);
       var result = helped.helper.update(helped.link, update);
       return "Updated: " + result;
@@ -54,6 +55,7 @@ public class OrdersREG {
 
   public static String regDel(Way way, Delete delete) throws ServletException {
     try {
+      way.logStep(delete);
       var helped = way.stores.getHelp(delete.registry.base);
       var result = helped.helper.delete(helped.link, delete);
       return "Deleted: " + result;

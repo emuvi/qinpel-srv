@@ -46,7 +46,7 @@
     </dependency>
     <dependency>
       <groupId>br.net.pin</groupId>
-      <artifactId>Batx</artifactId>
+      <artifactId>Jabx</artifactId>
       <version>0.1.0</version>
     </dependency>
     <dependency>

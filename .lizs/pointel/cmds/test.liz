@@ -23,6 +23,12 @@ local tst_path = Liz.path_join(dev_path, "Test")
 local cmd_dest = Liz.path_join(tst_path, "cmd")
 local pro_dest = Liz.path_join(cmd_dest, project)
 
+if Liz.has("CMakeLists.txt") then
+    local origin = "build/bin"
+    Liz.rm(pro_dest)
+    Liz.cp(origin, pro_dest)
+end
+
 if Liz.has("Cargo.toml") then
     local origin = "target/debug/" .. project .. Liz.dot_exe_ext()
     local destiny = Liz.path_join(pro_dest, project .. Liz.dot_exe_ext())

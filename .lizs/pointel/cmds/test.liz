@@ -52,6 +52,15 @@ if Liz.has("Cargo.toml") then
     end
 end
 
+if Liz.has("go.mod") then
+    local origin_dir = "build"
+    Liz.rm(destiny_dir)
+    Liz.cp(origin_dir, destiny_dir)
+    if tooled_dir then
+        Liz.cp(origin_dir, tooled_dir)
+    end
+end
+
 if Liz.has("pom.xml") then
     local origin_dir = "build"
     Liz.rm(destiny_dir)

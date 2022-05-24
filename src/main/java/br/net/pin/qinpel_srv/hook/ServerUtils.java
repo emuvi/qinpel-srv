@@ -39,7 +39,7 @@ public class ServerUtils {
         var authed = Runner.getAuthed(way, req);
         resp.setContentType("text/plain");
         if (authed != null) {
-          resp.getWriter().print(authed.user.name);
+          resp.getWriter().print(authed.getUserName());
         } else {
           resp.getWriter().print("<!-- No user is logged. -->");
         }

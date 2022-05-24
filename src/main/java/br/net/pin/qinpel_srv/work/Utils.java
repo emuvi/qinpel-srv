@@ -3,9 +3,14 @@ package br.net.pin.qinpel_srv.work;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+
 import br.net.pin.jabx.mage.WizArray;
 
 public class Utils {
+  public static String newRandomToken() {
+    return java.util.UUID.randomUUID().toString();
+  }
+
   public static String listFolders(File onDir) {
     var result = new StringBuilder();
     for (var file : onDir.listFiles()) {
@@ -34,14 +39,14 @@ public class Utils {
     }
   }
 
-  private final static String[] TEXT_EXTENSIONS = new String[] {"txt", "htm", "html",
-      "css", "log"};
-  private final static String[] IMAGE_EXTENSIONS = new String[] {"jpg", "jpeg", "gif",
-      "png", "ico", "bmp", "svg"};
-  private final static String[] AUDIO_EXTENSIONS = new String[] {"mp3", "ogg", "wav",
-      "midi", "mid"};
-  private final static String[] VIDEO_EXTENSIONS = new String[] {"mp4", "ogv", "avi",
-      "mpg", "webm", "flv", "mov"};
+  private final static String[] TEXT_EXTENSIONS = new String[] { "txt", "htm", "html",
+      "css", "log" };
+  private final static String[] IMAGE_EXTENSIONS = new String[] { "jpg", "jpeg", "gif",
+      "png", "ico", "bmp", "svg" };
+  private final static String[] AUDIO_EXTENSIONS = new String[] { "mp3", "ogg", "wav",
+      "midi", "mid" };
+  private final static String[] VIDEO_EXTENSIONS = new String[] { "mp4", "ogv", "avi",
+      "mpg", "webm", "flv", "mov" };
 
   public static String getMimeType(String fileName) {
     var dot = fileName.lastIndexOf(".");

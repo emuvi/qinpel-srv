@@ -4,12 +4,18 @@ import br.net.pin.jabx.data.Deed;
 import br.net.pin.jabx.data.Registry;
 
 public class Authed {
-  public final User user;
-  public final Group group;
+  private final User user;
+  private final Group group;
+  private final IssuedMap issuedMap;
 
   public Authed(User user, Group group) {
     this.user = user;
     this.group = group;
+    this.issuedMap = new IssuedMap();
+  }
+
+  public String getUserName() {
+    return user.name;
   }
 
   public String getHome() {
@@ -210,5 +216,21 @@ public class Authed {
       }
     }
     return false;
+  }
+
+  public String newIssued(Issued issued) {
+    return this.issuedMap.newIssued(issued);
+  }
+
+  public Issued getIssued(String token) {
+    return this.issuedMap.get(token);
+  }
+
+  public void addIssued(String token, Issued issued) {
+    this.issuedMap.put(token, issued);
+  }
+
+  public void delIssued(String token) {
+    this.issuedMap.remove(token);
   }
 }

@@ -1,5 +1,6 @@
 package br.net.pin.qinpel_srv.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import br.net.pin.jabx.data.Deed;
@@ -51,15 +52,19 @@ public class Authed {
   }
 
   public List<Allow> getUserAccess() {
-    return null;
-    // [ TODO ] implement
-    // if (this.user.access != null) {
-    // return this.user.access;
-    // } else if (this.group != null) {
-    // return this.group.access;
-    // } else {
-    // return new ArrayList<>();
-    // }
+    var result = new ArrayList<Allow>();
+    if (this.group != null) {
+      for (var group_allow : this.group.access) {
+        result.add(group_allow);
+      }
+    }
+    if (this.user.access != null) {
+      for (var user_allow : this.user.access) {
+        result.removeIf(on_group -> on_group.isOnSameResource(user_allow));
+        result.add(user_allow);
+      }
+    }
+    return result;
   }
 
   public boolean allowAPP(String name) {

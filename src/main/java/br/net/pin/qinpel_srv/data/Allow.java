@@ -2,6 +2,7 @@ package br.net.pin.qinpel_srv.data;
 
 import java.io.File;
 import java.util.List;
+import java.util.Objects;
 
 import com.google.gson.Gson;
 
@@ -47,7 +48,7 @@ public class Allow {
   }
 
   public class SQL {
-    public String store;
+    public String base;
     public String path;
   }
 
@@ -56,6 +57,7 @@ public class Allow {
   }
 
   public class GIZ {
+    public String base;
     public String path;
   }
 
@@ -95,7 +97,7 @@ public class Allow {
       }
     }
     if (this.sql != null) {
-      if (this.sql.store == null || this.sql.store.isEmpty() || this.sql.path == null
+      if (this.sql.base == null || this.sql.base.isEmpty() || this.sql.path == null
           || this.sql.path.isEmpty()) {
         this.sql = null;
       } else {
@@ -110,12 +112,41 @@ public class Allow {
       }
     }
     if (this.giz != null) {
-      if (this.giz.path == null || this.giz.path.isEmpty()) {
+      if (this.giz.base == null || this.giz.base.isEmpty() || this.giz.path == null
+          || this.giz.path.isEmpty()) {
         this.giz = null;
       } else {
         this.giz.path = new File(this.giz.path).getAbsolutePath();
       }
     }
+  }
+
+  public boolean isOnSameResource(Allow than) {
+    if (this.app != null && than.app != null) {
+      return Objects.equals(this.app.name, than.app.name);
+    }
+    if (this.dir != null && than.dir != null) {
+      return Objects.equals(this.dir.path, than.dir.path);
+    }
+    if (this.cmd != null && than.cmd != null) {
+      return Objects.equals(this.cmd.name, than.cmd.name);
+    }
+    if (this.bas != null && than.bas != null) {
+      return Objects.equals(this.bas.name, than.bas.name);
+    }
+    if (this.reg != null && than.reg != null) {
+      return Objects.equals(this.reg.base, than.reg.base) && Objects.equals(this.reg.registry, than.reg.registry);
+    }
+    if (this.sql != null && than.sql != null) {
+      return Objects.equals(this.sql.base, than.sql.base) && Objects.equals(this.sql.path, than.sql.path);
+    }
+    if (this.liz != null && than.liz != null) {
+      return Objects.equals(this.liz.path, than.liz.path);
+    }
+    if (this.giz != null && than.giz != null) {
+      return Objects.equals(this.giz.base, than.giz.base) && Objects.equals(this.giz.path, than.giz.path);
+    }
+    return false;
   }
 
   @Override

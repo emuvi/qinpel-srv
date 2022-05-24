@@ -26,7 +26,7 @@ public class Runner {
           }
         }
         var authed = new Authed(user, group);
-        way.autheds.addAuthed(token, authed);
+        way.authedMap.addAuthed(token, authed);
         return new Logged(token, authed.getLang());
       }
     }
@@ -34,7 +34,7 @@ public class Runner {
   }
 
   public static Authed getAuthed(Way way, HttpServletRequest req) {
-    return way.autheds.getAuthed(Runner.getToken(req));
+    return way.authedMap.getAuthed(Runner.getToken(req));
   }
 
   public static String getToken(HttpServletRequest req) {

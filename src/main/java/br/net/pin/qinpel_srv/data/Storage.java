@@ -10,11 +10,11 @@ import br.net.pin.jabx.data.Helped;
 import br.net.pin.jabx.data.Helper;
 import br.net.pin.jabx.mage.WizChars;
 
-public class Stores {
+public class Storage {
   private final Air air;
   private final Map<String, Stored> stores;
 
-  public Stores(Air air) throws Exception {
+  public Storage(Air air) throws Exception {
     this.air = air;
     if (this.air.setup.servesBAS) {
       this.stores = new ConcurrentHashMap<>();

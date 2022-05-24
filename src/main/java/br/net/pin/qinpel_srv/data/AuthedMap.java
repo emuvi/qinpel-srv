@@ -2,7 +2,7 @@ package br.net.pin.qinpel_srv.data;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Autheds extends ConcurrentHashMap<String, Authed> {
+public class AuthedMap extends ConcurrentHashMap<String, Authed> {
   public Authed getAuthed(String token) {
     return this.get(token);
   }

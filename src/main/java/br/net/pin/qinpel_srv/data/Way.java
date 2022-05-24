@@ -6,15 +6,15 @@ import org.apache.commons.io.FilenameUtils;
 
 public class Way {
   public final Air air;
-  public final Autheds autheds;
-  public final Stores stores;
+  public final AuthedMap authedMap;
+  public final Storage stores;
 
   private final PrintWriter archive;
 
   public Way(Air air) throws Exception {
     this.air = air;
-    this.autheds = new Autheds();
-    this.stores = new Stores(air);
+    this.authedMap = new AuthedMap();
+    this.stores = new Storage(air);
     this.archive = air.setup.serverArchive ? new PrintWriter(air.setup.serverFolder + "/"
         + air.setup.serverName + ".log") : null;
   }

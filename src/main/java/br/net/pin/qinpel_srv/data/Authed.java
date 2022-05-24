@@ -1,5 +1,7 @@
 package br.net.pin.qinpel_srv.data;
 
+import java.util.List;
+
 import br.net.pin.jabx.data.Deed;
 import br.net.pin.jabx.data.Registry;
 
@@ -46,6 +48,18 @@ public class Authed {
     } else {
       return false;
     }
+  }
+
+  public List<Allow> getUserAccess() {
+    return null;
+    // [ TODO ] implement
+    // if (this.user.access != null) {
+    // return this.user.access;
+    // } else if (this.group != null) {
+    // return this.group.access;
+    // } else {
+    // return new ArrayList<>();
+    // }
   }
 
   public boolean allowAPP(String name) {

@@ -62,11 +62,18 @@ if Liz.has("go.mod") then
 end
 
 if Liz.has("pom.xml") then
-    local origin_dir = "build"
-    Liz.rm(destiny_dir)
-    Liz.cp(origin_dir, destiny_dir)
-    if tooled_dir then
-        Liz.cp(origin_dir, tooled_dir)
+    if Liz.is_dir("build") then
+        local origin_dir = "build"
+        Liz.rm(destiny_dir)
+        Liz.cp(origin_dir, destiny_dir)
+        if tooled_dir then
+            Liz.cp(origin_dir, tooled_dir)
+        end
+    elseif Liz.is_dir("target") then
+        local jar_files = Liz.path_list_files_ext("target", "jar")
+        for _, jar_file in pairs(jar_files) do
+            print("Checking " .. jar_file)
+        end
     end
 end
 

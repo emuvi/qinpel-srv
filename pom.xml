@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>br.net.pin</groupId>
-  <artifactId>QinpelSrv</artifactId>
+  <artifactId>qinpel-srv</artifactId>
   <version>0.1.0</version>
   <packaging>jar</packaging>
-  <name>qinpel-srv</name>
+  <name>QinpelSrv</name>
   <url>https://github.com/emuvi/qinpel-srv</url>
 
   <properties>
@@ -88,12 +88,12 @@
           <archive>
             <manifest>
               <addClasspath>true</addClasspath>
-              <mainClass>br.net.pin.${project.artifactId}</mainClass>
+              <mainClass>br.net.pin.${project.name}</mainClass>
               <classpathPrefix>lib/</classpathPrefix>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
             </manifest>
           </archive>
-          <finalName>${project.name}</finalName>
+          <finalName>${project.artifactId}</finalName>
           <outputDirectory>build</outputDirectory>
         </configuration>
       </plugin>
@@ -110,6 +110,23 @@
             <configuration>
               <outputDirectory>build/lib</outputDirectory>
               <includeScope>compile</includeScope>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <?m2e execute onConfiguration,onIncremental?>
+            <goals>
+              <goal>sources</goal>
+              <goal>resolve</goal>
+            </goals>
+            <configuration>
+              <classifier>javadoc</classifier>
             </configuration>
           </execution>
         </executions>

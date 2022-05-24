@@ -90,21 +90,11 @@ public class OrdersCMD {
       return Utils.listFolders(cmdsDir);
     }
     var result = new StringBuilder();
-    for (var access : forAuthed.user.access) {
+    for (var access : forAuthed.getUserAccess()) {
       if (access.cmd != null) {
         if (new File(cmdsDir, access.cmd.name).exists()) {
           result.append(access.cmd.name);
           result.append("\n");
-        }
-      }
-    }
-    if (forAuthed.group != null) {
-      for (var access : forAuthed.group.access) {
-        if (access.cmd != null) {
-          if (new File(cmdsDir, access.cmd.name).exists()) {
-            result.append(access.cmd.name);
-            result.append("\n");
-          }
         }
       }
     }

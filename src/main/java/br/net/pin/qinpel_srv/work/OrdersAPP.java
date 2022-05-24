@@ -25,21 +25,11 @@ public class OrdersAPP {
       return Utils.listFolders(appsDir);
     }
     var result = new StringBuilder();
-    for (var access : forAuthed.user.access) {
+    for (var access : forAuthed.getUserAccess()) {
       if (access.app != null) {
         if (new File(appsDir, access.app.name).exists()) {
           result.append(access.app.name);
           result.append("\n");
-        }
-      }
-    }
-    if (forAuthed.group != null) {
-      for (var access : forAuthed.group.access) {
-        if (access.app != null) {
-          if (new File(appsDir, access.app.name).exists()) {
-            result.append(access.app.name);
-            result.append("\n");
-          }
         }
       }
     }

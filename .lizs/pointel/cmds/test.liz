@@ -71,8 +71,13 @@ if Liz.has("pom.xml") then
         end
     elseif Liz.is_dir("target") then
         local jar_files = Liz.path_list_files_ext("target", "jar")
-        for _, jar_file in pairs(jar_files) do
-            print("Checking " .. jar_file)
+        local origin_jar = Liz.find_smaller_line(jar_files)
+        Liz.rm(destiny_dir)
+        Liz.mkdir(destiny_dir)
+        local destiny_jar = Liz.del_rex(origin_jar, "\\-\\d+\\.\\d+\\.\\d+")
+        Liz.cp(origin_jar, destiny_jar)
+        if tooled_dir then
+            Liz.cp(origin_jar, Liz.path_join(tooled_dir, destiny_jar))
         end
     end
 end

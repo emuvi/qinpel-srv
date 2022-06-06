@@ -74,6 +74,8 @@ public class QinpelSrv {
         .desc("Should we archive all the messages?").build());
     result.addOption(Option.builder("n").longOpt("name").hasArg()
         .desc("On behalf of what name should we serve?").build());
+    result.addOption(Option.builder("l").longOpt("lang").hasArg()
+        .desc("On what language should we serve?").build());
     result.addOption(Option.builder("h").longOpt("host").hasArg()
         .desc("On what host should we serve?").build());
     result.addOption(Option.builder("p").longOpt("port").hasArg()
@@ -94,7 +96,7 @@ public class QinpelSrv {
         .desc("Should we serve register actions?").build());
     result.addOption(Option.builder("s").longOpt("serves-sql")
         .desc("Should we serve SQL executions?").build());
-    result.addOption(Option.builder("l").longOpt("serves-liz")
+    result.addOption(Option.builder("z").longOpt("serves-liz")
         .desc("Should we serve LIZ executions?").build());
     result.addOption(Option.builder("g").longOpt("serves-giz")
         .desc("Should we serve GIZ executions?").build());
@@ -110,6 +112,9 @@ public class QinpelSrv {
     }
     if (command.hasOption('n')) {
       setup.serverName = command.getOptionValue('n');
+    }
+    if (command.hasOption('l')) {
+      setup.serverLang = command.getOptionValue('l');
     }
     if (command.hasOption('h')) {
       setup.serverHost = command.getOptionValue('h');
@@ -141,8 +146,11 @@ public class QinpelSrv {
     if (command.hasOption('s')) {
       setup.servesSQL = true;
     }
-    if (command.hasOption('l')) {
+    if (command.hasOption('z')) {
       setup.servesLIZ = true;
+    }
+    if (command.hasOption('g')) {
+      setup.servesGIZ = true;
     }
   }
 

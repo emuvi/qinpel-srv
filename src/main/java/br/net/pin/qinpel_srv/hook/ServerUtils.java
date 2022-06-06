@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class ServerUtils {
   public static void init(ServletContextHandler context, Setup setup) {
     initPing(context);
+    initLang(context);
     initLogged(context);
     initRedirects(context, setup);
   }
@@ -28,6 +29,18 @@ public class ServerUtils {
         resp.getWriter().print("pong");
       }
     }), "/ping");
+  }
+
+  private static void initLang(ServletContextHandler context) {
+    context.addServlet(new ServletHolder(new HttpServlet() {
+      @Override
+      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+          throws ServletException, IOException {
+        var way = Runner.getWay(req);
+        resp.setContentType("text/plain");
+        resp.getWriter().print(way.air.setup.serverLang);
+      }
+    }), "/lang");
   }
 
   private static void initLogged(ServletContextHandler context) {

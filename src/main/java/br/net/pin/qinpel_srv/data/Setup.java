@@ -10,6 +10,7 @@ public class Setup {
   public Boolean serverVerbose;
   public Boolean serverArchive;
   public String serverName;
+  public String serverLang;
   public String serverHost;
   public Integer serverPort;
   public String serverFolder;
@@ -41,10 +42,13 @@ public class Setup {
     if (this.serverArchive == null) {
       this.serverArchive = false;
     }
-    if (this.serverName == null) {
+    if (this.serverName == null || this.serverName.isEmpty()) {
       this.serverName = "QinpelSrv";
     }
-    if (this.serverHost == null) {
+    if (this.serverLang == null || this.serverLang.isEmpty()) {
+      this.serverLang = "en";
+    }
+    if (this.serverHost == null || this.serverHost.isEmpty()) {
       this.serverHost = "localhost";
     }
     if (this.serverPort == null) {

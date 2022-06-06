@@ -1,4 +1,5 @@
-jre/
-dist/
-build/
+.lizs/
 target/
+build/
+dist/
+jre/

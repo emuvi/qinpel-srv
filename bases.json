@@ -3,10 +3,10 @@
     "link": {
       "name": "tester",
       "base": "PostgreClient",
-      "path": "pointel.pointto.us",
+      "path": "localhost",
       "port": "5432",
-      "data": "pointel",
-      "user": "tester",
+      "data": "dessidi",
+      "user": "postgres",
       "pass": "${env:BASE_TEST_PASS}"
     }
   }

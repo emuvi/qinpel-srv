@@ -47,10 +47,9 @@ public class ServesDIR {
         var body = IOUtils.toString(req.getReader());
         var onePath = OnePath.fromString(body);
         if (onePath.path == null || onePath.path.isEmpty()) {
-          resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
-          return;
+          onePath.path = ".";
         }
-        var path = Utils.newFile(onePath.path, authed.getHome());
+        var path = Utils.resolveFile(onePath.path, authed.getHome());
         if (!authed.allowDIR(path.getAbsolutePath(), false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the path: " + path);
@@ -89,7 +88,7 @@ public class ServesDIR {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(onePath.path, authed.getHome());
+        var path = Utils.resolveFile(onePath.path, authed.getHome());
         if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
@@ -123,8 +122,8 @@ public class ServesDIR {
               "You must provide a destiny");
           return;
         }
-        var origin = Utils.newFile(twoPath.origin, authed.getHome());
-        var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
+        var origin = Utils.resolveFile(twoPath.origin, authed.getHome());
+        var destiny = Utils.resolveFile(twoPath.destiny, authed.getHome());
         if (!authed.allowDIR(origin.getAbsolutePath(), false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the origin: " + origin);
@@ -173,8 +172,8 @@ public class ServesDIR {
               "You must provide a destiny");
           return;
         }
-        var origin = Utils.newFile(twoPath.origin, authed.getHome());
-        var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
+        var origin = Utils.resolveFile(twoPath.origin, authed.getHome());
+        var destiny = Utils.resolveFile(twoPath.destiny, authed.getHome());
         if (!authed.allowDIR(origin.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the origin: " + origin);
@@ -218,7 +217,7 @@ public class ServesDIR {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(onePath.path, authed.getHome());
+        var path = Utils.resolveFile(onePath.path, authed.getHome());
         if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
@@ -257,7 +256,7 @@ public class ServesDIR {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(pathRead.path, authed.getHome());
+        var path = Utils.resolveFile(pathRead.path, authed.getHome());
         if (!authed.allowDIR(path.getAbsolutePath(), false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the path: " + path);
@@ -288,7 +287,7 @@ public class ServesDIR {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(pathWrite.path, authed.getHome());
+        var path = Utils.resolveFile(pathWrite.path, authed.getHome());
         if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
@@ -319,7 +318,7 @@ public class ServesDIR {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(pathWrite.path, authed.getHome());
+        var path = Utils.resolveFile(pathWrite.path, authed.getHome());
         if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);
@@ -355,8 +354,8 @@ public class ServesDIR {
               "You must provide a destiny");
           return;
         }
-        var origin = Utils.newFile(twoPath.origin, authed.getHome());
-        var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
+        var origin = Utils.resolveFile(twoPath.origin, authed.getHome());
+        var destiny = Utils.resolveFile(twoPath.destiny, authed.getHome());
         if (!authed.allowDIR(origin.getAbsolutePath(), false)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to the origin: " + origin);
@@ -405,8 +404,8 @@ public class ServesDIR {
               "You must provide a destiny");
           return;
         }
-        var origin = Utils.newFile(twoPath.origin, authed.getHome());
-        var destiny = Utils.newFile(twoPath.destiny, authed.getHome());
+        var origin = Utils.resolveFile(twoPath.origin, authed.getHome());
+        var destiny = Utils.resolveFile(twoPath.destiny, authed.getHome());
         if (!authed.allowDIR(origin.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the origin: " + origin);
@@ -450,7 +449,7 @@ public class ServesDIR {
           resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "You must provide a path");
           return;
         }
-        var path = Utils.newFile(onePath.path, authed.getHome());
+        var path = Utils.resolveFile(onePath.path, authed.getHome());
         if (!authed.allowDIR(path.getAbsolutePath(), true)) {
           resp.sendError(HttpServletResponse.SC_FORBIDDEN,
               "You don't have access to mutate the path: " + path);

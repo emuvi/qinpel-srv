@@ -3,6 +3,7 @@ package br.net.pin.qinpel_srv.work;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import br.net.pin.jabx.mage.WizArray;
 
@@ -22,12 +23,11 @@ public class Utils {
     return result.toString();
   }
 
-  public static File newFile(String path, String parentIfRelative) {
-    var result = new File(path);
-    if (!result.isAbsolute()) {
-      result = new File(parentIfRelative, path);
-    }
-    return result;
+  public static File resolveFile(String path, String parentIfRelative) {
+    var parent = Paths.get(parentIfRelative);
+    var child = Paths.get(path);
+    var result = parent.resolve(child);
+    return result.toFile();
   }
 
   public static void close(Closeable resource) {

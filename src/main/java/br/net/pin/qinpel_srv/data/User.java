@@ -1,6 +1,7 @@
 package br.net.pin.qinpel_srv.data;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,13 @@ public class User {
     if (this.home.isEmpty()) {
       this.home = "dir/" + this.name;
     }
-    this.home = new File(this.home).getAbsolutePath();
+    var homeDir = new File(this.home);
+    this.home = homeDir.getAbsolutePath();
+    try {
+      Files.createDirectories(homeDir.toPath());
+    } catch (Exception e) {
+      System.err.println("Error creating user home directory on: " + this.home + " why: " + e.getMessage());
+    }
     if (this.lang == null) {
       this.lang = "";
     }

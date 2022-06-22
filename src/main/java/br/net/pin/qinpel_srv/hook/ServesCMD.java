@@ -46,8 +46,8 @@ public class ServesCMD {
         try {
           var issued = OrdersCMD.run(execute);
           var issuedToken = authed.newIssued(issued);
-          resp.getWriter().print(issuedToken);
           resp.setContentType("text/plain");
+          resp.getWriter().print(issuedToken);
         } catch (Exception e) {
           throw new ServletException(e);
         }

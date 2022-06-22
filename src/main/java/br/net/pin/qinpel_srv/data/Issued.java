@@ -7,83 +7,62 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Issued {
 
-  private final List<String> outs;
-  private final List<String> errs;
-  private volatile Integer exitCode;
-
-  private final ReadWriteLock outsLock;
-  private final ReadWriteLock errsLock;
-  private final ReadWriteLock exitLock;
+  private final Long createdAt;
+  private final List<String> resultLines;
+  private final ReadWriteLock linesLock;
+  private volatile Integer resultCoded;
+  private volatile Boolean isDone;
+  private volatile Long finishedAt;
 
   public Issued() {
-    this.outs = new ArrayList<>();
-    this.errs = new ArrayList<>();
-    this.exitCode = null;
-    this.outsLock = new ReentrantReadWriteLock();
-    this.errsLock = new ReentrantReadWriteLock();
-    this.exitLock = new ReentrantReadWriteLock();
+    this.createdAt = System.nanoTime();
+    this.resultLines = new ArrayList<>();
+    this.linesLock = new ReentrantReadWriteLock();
+    this.resultCoded = null;
+    this.isDone = false;
+    this.finishedAt = null;
   }
 
-  public void addOut(String out) {
-    this.outsLock.writeLock().lock();
+  public Long getCreatedAt() {
+    return this.createdAt;
+  }
+
+  public String getLines() {
     try {
-      this.outs.add(out);
+      this.linesLock.readLock().lock();
+      return String.join("\n", this.resultLines);
     } finally {
-      this.outsLock.writeLock().unlock();
+      this.linesLock.readLock().unlock();
     }
   }
 
-  public String getOuts() {
-    this.outsLock.readLock().lock();
+  public void addLine(String out) {
     try {
-      return String.join("\n", this.outs);
+      this.linesLock.writeLock().lock();
+      this.resultLines.add(out);
     } finally {
-      this.outsLock.readLock().unlock();
+      this.linesLock.writeLock().unlock();
     }
   }
 
-  public void addErr(String err) {
-    this.errsLock.writeLock().lock();
-    try {
-      this.errs.add(err);
-    } finally {
-      this.errsLock.writeLock().unlock();
-    }
+  public Integer getResultCoded() {
+    return this.resultCoded;
   }
 
-  public String getErrs() {
-    this.errsLock.readLock().lock();
-    try {
-      return String.join("\n", this.errs);
-    } finally {
-      this.errsLock.readLock().unlock();
-    }
+  public void setResultCoded(Integer coded) {
+    this.resultCoded = coded;
   }
 
-  public Integer getExitCode() {
-    this.exitLock.readLock().lock();
-    try {
-      return this.exitCode;
-    } finally {
-      this.exitLock.readLock().unlock();
-    }
+  public boolean isDone() {
+    return this.isDone;
   }
 
-  public void setExitCode(Integer exitCode) {
-    this.exitLock.writeLock().lock();
-    try {
-      this.exitCode = exitCode;
-    } finally {
-      this.exitLock.writeLock().unlock();
-    }
+  public void setDone() {
+    this.isDone = true;
+    this.finishedAt = System.nanoTime();
   }
 
-  public boolean hasFinished() {
-    this.exitLock.readLock().lock();
-    try {
-      return this.exitCode != null;
-    } finally {
-      this.exitLock.readLock().unlock();
-    }
+  public Long getFinishedAt() {
+    return this.finishedAt;
   }
 }

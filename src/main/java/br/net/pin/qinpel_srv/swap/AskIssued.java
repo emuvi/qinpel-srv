@@ -7,7 +7,7 @@ public class AskIssued {
   public Boolean askCreatedAt;
   public Boolean askResultLines;
   public Integer askResultLinesFrom;
-  public Boolean askResultCode;
+  public Boolean askResultCoded;
   public Boolean askIsDone;
   public Boolean askFinishedAt;
 

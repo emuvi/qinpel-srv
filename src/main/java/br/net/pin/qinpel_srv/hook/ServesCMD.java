@@ -1,6 +1,5 @@
 package br.net.pin.qinpel_srv.hook;
 
-import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.IOUtils;
@@ -44,26 +43,10 @@ public class ServesCMD {
               "You don't have access to the command: " + execute.exec);
           return;
         }
-        var reqDir = new File(way.air.setup.serverFolder, "cmd/" + execute.exec);
-        if (!reqDir.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND,
-              "There is no command on folder: " + reqDir);
-          return;
-        }
-        var executable = new File(reqDir, execute.exec + ".jar");
-        if (!executable.exists()) {
-          executable = new File(reqDir, execute.exec + ".exe");
-        }
-        if (!executable.exists()) {
-          executable = new File(reqDir, execute.exec);
-        }
-        if (!executable.exists()) {
-          resp.sendError(HttpServletResponse.SC_NOT_FOUND,
-              "There is no command at executable: " + executable);
-          return;
-        }
         try {
-          resp.getWriter().print(OrdersCMD.run(executable, execute));
+          var issued = OrdersCMD.run(execute);
+          var issuedToken = authed.newIssued(issued);
+          resp.getWriter().print(issuedToken);
           resp.setContentType("text/plain");
         } catch (Exception e) {
           throw new ServletException(e);

@@ -5,35 +5,28 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 
 import br.net.pin.qinpel_srv.data.Authed;
+import br.net.pin.qinpel_srv.data.Issued;
 import br.net.pin.qinpel_srv.data.Way;
 import br.net.pin.qinpel_srv.swap.Execute;
 
 public class OrdersCMD {
-  public static String run(File executable, Execute execution) throws Exception {
+  public static Issued run(Execute execution) throws Exception {
+    var issued = new Issued();
     var builder = new ProcessBuilder();
-    var buffer = new ArrayList<String>();
-    if (executable.getName().toLowerCase().endsWith(".jar")) {
-      buffer.add("java");
-      buffer.add("-jar");
-      buffer.add(executable.getAbsolutePath());
-    } else {
-      buffer.add(executable.getAbsolutePath());
+    if (execution.exec.toLowerCase().endsWith(".jar")) {
+      builder.command().add("java");
+      builder.command().add("-jar");
     }
+    builder.command().add(execution.exec);
     if (execution.args != null) {
-      buffer.addAll(execution.args);
+      builder.command().addAll(execution.args);
     }
-    builder.command(buffer);
     builder.redirectErrorStream(true);
     var process = builder.start();
-    Thread inputsThread = null;
-    var inputsException = execution.inputs != null ? new AtomicReference<Exception>(null)
-        : null;
     if (execution.inputs != null) {
-      inputsThread = new Thread() {
+      new Thread() {
         @Override
         public void run() {
           try {
@@ -45,43 +38,33 @@ public class OrdersCMD {
               writer.flush();
             }
           } catch (Exception e) {
-            inputsException.set(e);
+            issued.addLine("Exception on put Input: " + e.getMessage());
           }
         };
+      }.start();
+    }
+    new Thread() {
+      public void run() {
+        var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        try {
+          String line;
+          while ((line = reader.readLine()) != null) {
+            issued.addLine(line);
+          }
+        } catch (Exception e) {
+          issued.addLine("Exception on get Output: " + e.getMessage());
+        }
+        try {
+          var exitCode = process.waitFor();
+          issued.setResultCoded(exitCode);
+        } catch (Exception e) {
+          issued.addLine("Exception on get Code: " + e.getMessage());
+        } finally {
+          issued.setDone();
+        }
       };
-      inputsThread.start();
-    }
-    buffer.clear();
-    Exception outputsException = null;
-    var reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-    try {
-      String line;
-      while ((line = reader.readLine()) != null) {
-        buffer.add(line);
-      }
-    } catch (Exception e) {
-      outputsException = e;
-    }
-    if (inputsThread != null) {
-      inputsThread.join();
-    }
-    if (inputsException != null && inputsException.get() != null) {
-      throw new Exception("Error on send the inputs to the command.", inputsException
-          .get());
-    }
-    if (outputsException != null) {
-      throw new Exception("Error on getting the outputs from the command.",
-          outputsException);
-    }
-    var exitCode = process.waitFor();
-    var result = new StringBuilder();
-    result.append(exitCode);
-    result.append("\n'");
-    for (var line : buffer) {
-      result.append(line);
-      result.append("\n");
-    }
-    return result.toString();
+    }.start();
+    return issued;
   }
 
   public static String list(Way way, Authed forAuthed) {

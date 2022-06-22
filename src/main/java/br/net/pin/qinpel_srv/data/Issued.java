@@ -36,6 +36,20 @@ public class Issued {
     }
   }
 
+  public String getLinesFrom(int index) {
+    try {
+      this.linesLock.readLock().lock();
+      var result = new StringBuilder();
+      for (int i = index; i < this.resultLines.size(); i++) {
+        result.append(this.resultLines.get(i));
+        result.append("\n");
+      }
+      return result.toString();
+    } finally {
+      this.linesLock.readLock().unlock();
+    }
+  }
+
   public void addLine(String out) {
     try {
       this.linesLock.writeLock().lock();

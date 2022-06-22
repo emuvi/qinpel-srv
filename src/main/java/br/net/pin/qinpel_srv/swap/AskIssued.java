@@ -4,6 +4,12 @@ import com.google.gson.Gson;
 
 public class AskIssued {
   public String token;
+  public Boolean askCreatedAt;
+  public Boolean askResultLines;
+  public Integer askResultLinesFrom;
+  public Boolean askResultCode;
+  public Boolean askIsDone;
+  public Boolean askFinishedAt;
 
   @Override
   public String toString() {

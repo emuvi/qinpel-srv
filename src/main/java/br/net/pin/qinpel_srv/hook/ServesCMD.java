@@ -16,8 +16,25 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class ServesCMD {
   public static void init(ServletContextHandler context) {
-    initRun(context);
     initList(context);
+    initRun(context);
+  }
+
+  private static void initList(ServletContextHandler context) {
+    context.addServlet(new ServletHolder(new HttpServlet() {
+      @Override
+      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+          throws ServletException, IOException {
+        var way = Runner.getWay(req);
+        var authed = Runner.getAuthed(way, req);
+        if (authed == null) {
+          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
+          return;
+        }
+        resp.setContentType("text/plain");
+        resp.getWriter().print(OrdersCMD.list(way, authed));
+      }
+    }), "/list/cmds");
   }
 
   private static void initRun(ServletContextHandler context) {
@@ -53,22 +70,5 @@ public class ServesCMD {
         }
       }
     }), "/cmd/run");
-  }
-
-  private static void initList(ServletContextHandler context) {
-    context.addServlet(new ServletHolder(new HttpServlet() {
-      @Override
-      protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-          throws ServletException, IOException {
-        var way = Runner.getWay(req);
-        var authed = Runner.getAuthed(way, req);
-        if (authed == null) {
-          resp.sendError(HttpServletResponse.SC_FORBIDDEN, "You must be logged");
-          return;
-        }
-        resp.setContentType("text/plain");
-        resp.getWriter().print(OrdersCMD.list(way, authed));
-      }
-    }), "/list/cmds");
   }
 }
